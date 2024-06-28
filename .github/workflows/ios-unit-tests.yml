@@ -42,7 +42,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Clone iOS SDK repo
-        run: git clone --depth 1 https://github.com/firebase/firebase-ios-sdk.git
+        uses: actions/checkout@v4
+        with:
+          repository: firebase/firebase-ios-sdk
+          fetch-depth: 1
+          path: firebase-ios-sdk
       - name: Copy mock responses into SDK repo
         run: |
           mkdir firebase-ios-sdk/FirebaseVertexAI/Tests/Unit/vertexai-sdk-test-data &&
