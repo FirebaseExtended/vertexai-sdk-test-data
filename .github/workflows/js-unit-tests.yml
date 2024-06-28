@@ -50,7 +50,7 @@ jobs:
         with:
           node-version: 20.x
       - name: Clone JS SDK repo
-        run: git clone --depth 1 https://github.com/firebase/firebase-js-sdk.git
+        run: git clone --depth 1 --branch tanzim/debug-script https://github.com/firebase/firebase-js-sdk.git
       - name: Test setup and yarn install
         run: |
           cp config/ci.config.json config/project.json
@@ -66,5 +66,5 @@ jobs:
       - name: Run unit tests
         run: |
           yarn ts-node ./test-utils/convert-mocks.ts &&
-          node ../../scripts/run_tests_in_ci.js -s test
+          node ../../scripts/run_tests_in_ci.js -s test:debug
         working-directory: firebase-js-sdk/packages/vertexai
