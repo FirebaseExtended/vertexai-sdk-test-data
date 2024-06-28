@@ -57,12 +57,6 @@ jobs:
       - name: Initialize xcodebuild
         run: scripts/setup_spm_tests.sh
         working-directory: firebase-ios-sdk
-      - uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 120
-          max_attempts: 3
-          retry_on: error
-          retry_wait_seconds: 120
-          command: |
-            cd firebase-ios-sdk &&
-            scripts/build.sh FirebaseVertexAIUnit ${{ matrix.target }} spm
+      - name: Run unit tests
+        run: scripts/build.sh FirebaseVertexAIUnit ${{ matrix.target }} spm
+        working-directory: firebase-ios-sdk
