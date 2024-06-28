@@ -1,0 +1,62 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This workflow is a modified version of the firebase-ios-sdk vertexai.yml workflow:
+# https://github.com/firebase/firebase-ios-sdk/blob/431b955d5cd79c12da0fe9c6fe6307ee5396b46f/.github/workflows/vertexai.yml
+
+name: iOS Unit Tests
+
+on:
+  pull_request:
+    paths:
+      - "mock-responses**"
+      - ".github/workflows/ios-unit-tests.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        target: [iOS, macOS, catalyst, tvOS, visionOS]
+        os: [macos-14]
+        include:
+          - os: macos-14
+            xcode: Xcode_15.2
+    runs-on: ${{ matrix.os }}
+    env:
+      FIREBASECI_USE_LATEST_GOOGLEAPPMEASUREMENT: 1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clone iOS SDK repo
+        uses: actions/checkout@v4
+        with:
+          repository: firebase/firebase-ios-sdk
+          fetch-depth: 1
+          path: firebase-ios-sdk
+      - name: Copy mock responses into SDK repo
+        run: |
+          mkdir firebase-ios-sdk/FirebaseVertexAI/Tests/Unit/vertexai-sdk-test-data &&
+          cp -r mock-responses firebase-ios-sdk/FirebaseVertexAI/Tests/Unit/vertexai-sdk-test-data
+      - name: Xcode
+        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app/Contents/Developer
+        working-directory: firebase-ios-sdk
+      - name: Initialize xcodebuild
+        run: scripts/setup_spm_tests.sh
+        working-directory: firebase-ios-sdk
+      - name: Run unit tests
+        run: scripts/build.sh FirebaseVertexAIUnit ${{ matrix.target }} spm
+        working-directory: firebase-ios-sdk
