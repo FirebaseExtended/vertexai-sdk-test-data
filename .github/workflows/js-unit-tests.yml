@@ -1,0 +1,74 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This workflow is a modified version of the firebase-js-sdk test-all.yml workflow:
+# https://github.com/firebase/firebase-js-sdk/blob/226fe8aa5f178ec149cea0430d5d54fb4689bcdb/.github/workflows/test-all.yml
+
+name: JS Unit Tests
+
+on:
+  pull_request:
+    paths:
+      - "mock-responses**"
+      - ".github/workflows/js-unit-tests.yml"
+
+env:
+  # make chromedriver detect installed Chrome version and download the corresponding driver
+  DETECT_CHROMEDRIVER_VERSION: true
+  # The default behavior of chromedriver uses the older Chrome download URLs. We need to override
+  # the behavior to use the new URLs.
+  CHROMEDRIVER_CDNURL: https://googlechromelabs.github.io/
+  CHROMEDRIVER_CDNBINARIESURL: https://storage.googleapis.com/chrome-for-testing-public
+  CHROME_VALIDATED_VERSION: linux-120.0.6099.71
+  CHROME_VERSION_MISMATCH_MESSAGE: "The Chrome version doesn't match the previously validated version. Consider updating CHROME_VALIDATED_VERSION in the GitHub workflow if tests pass."
+  artifactRetentionDays: 14
+  # Bump Node memory limit
+  NODE_OPTIONS: "--max_old_space_size=4096"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Install Chrome so the correct version of webdriver can be installed by chromedriver when
+      # setting up the repo. This must be done to build and execute Auth properly.
+      - name: Install Chrome stable
+        run: npx @puppeteer/browsers install chrome@stable
+      - uses: actions/checkout@v3
+      - name: Set up Node (20)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - name: Clone JS SDK repo
+        uses: actions/checkout@v4
+        with:
+          repository: firebase/firebase-js-sdk
+          fetch-depth: 1
+          path: firebase-js-sdk
+      - name: Test setup and yarn install
+        run: |
+          cp config/ci.config.json config/project.json
+          yarn
+        working-directory: firebase-js-sdk
+      - name: yarn build
+        run: yarn build
+        working-directory: firebase-js-sdk
+      - name: Copy mock responses into SDK repo
+        run: |
+          mkdir firebase-js-sdk/packages/vertexai/test-utils/vertexai-sdk-test-data &&
+          cp -r mock-responses firebase-js-sdk/packages/vertexai/test-utils/vertexai-sdk-test-data
+      - name: Run unit tests
+        run: |
+          yarn ts-node ./test-utils/convert-mocks.ts &&
+          node ../../scripts/run_tests_in_ci.js -s test:skip-clone
+        working-directory: firebase-js-sdk/packages/vertexai
