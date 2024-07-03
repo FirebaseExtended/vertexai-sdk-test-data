@@ -32,16 +32,16 @@ jobs:
           fetch-depth: 0
       - name: Get current version number
         run: |
-          [[ $(git tag | tail -n1) =~ ^v([0-9]+)\.([0-9]+)$ ]]
+          [[ $(git tag --sort=v:refname | tail -n1) =~ ^v([0-9]+)\.([0-9]+)$ ]]
           echo "MAJOR=${BASH_REMATCH[1]}" >> $GITHUB_ENV
           echo "MINOR=${BASH_REMATCH[2]}" >> $GITHUB_ENV
       - name: Find new version number
         run: |
-          # If any change to mock-responses other than a new file added
-          if git diff --name-only --diff-filter=a HEAD^ HEAD | grep ^mock-responses; then
-            NEW_VERSION="v$((MAJOR + 1)).0"
-          else
+          # If no changes to mock-responses other than addition of files
+          if git diff --quiet --diff-filter=a HEAD^...HEAD mock-responses ; then
             NEW_VERSION="v$MAJOR.$((MINOR + 1))"
+          else
+            NEW_VERSION="v$((MAJOR + 1)).0"
           fi
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
       - name: Create tag
