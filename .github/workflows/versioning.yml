@@ -1,0 +1,50 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This workflow creates a new tag following the guidelines in the README.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'mock-responses**'
+
+jobs:
+  add-tag:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get current version number
+        run: |
+          [[ $(git tag --sort=v:refname | tail -n1) =~ ^v([0-9]+)\.([0-9]+)$ ]]
+          echo "MAJOR=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          echo "MINOR=${BASH_REMATCH[2]}" >> $GITHUB_ENV
+      - name: Find new version number
+        run: |
+          # Check for changes to existing mock responses (diff returns 1 if changes are found)
+          if ! git diff --name-status --exit-code --diff-filter=a HEAD^...HEAD mock-responses; then
+            NEW_VERSION="v$((MAJOR + 1)).0"
+          else
+            NEW_VERSION="v$MAJOR.$((MINOR + 1))"
+          fi
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+      - name: Create tag
+        run: |
+          git tag $NEW_VERSION
+          git push origin $NEW_VERSION
