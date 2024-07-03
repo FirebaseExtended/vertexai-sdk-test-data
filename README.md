@@ -14,4 +14,4 @@ tagged by GitHub Actions with version numbers of the format `v<MAJOR>.<MINOR>`
 following these guidelines:
 - Changes to existing mock response files require a **major** version bump.
 - Introduction of new mock response files require a **minor** version bump.
-- There is no "patch" version.
+- There is no **patch** version component.
