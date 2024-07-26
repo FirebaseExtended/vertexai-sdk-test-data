@@ -28,6 +28,7 @@ from urllib.request import urlopen
 DISCOVERY_DOC_URL = "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1"
 SCHEMA_PREFIX = "GoogleCloudAiplatformV1beta1"
 COVERAGE_KEYWORD = "_coverage"
+DESCRIPTION_KEYWORD = "_description"
 RESPONSE_TYPES = ["GenerateContentResponse", "CountTokensResponse"]
 SCRIPT_DIR = os.path.dirname(__file__)
 MOCK_RESPONSES_PATH = os.path.join(SCRIPT_DIR, "..", "mock-responses")
@@ -63,6 +64,12 @@ def get_args():
         help="Output the coverage data as JSON",
     )
     parser.add_argument(
+        "--print-descriptions",
+        "-d",
+        action="store_true",
+        help="Output the description of each field",
+    )
+    parser.add_argument(
         "--list-files",
         "-l",
         action="store_true",
@@ -87,9 +94,11 @@ def get_args():
         " evaluated",
     )
     args = parser.parse_args()
-    if args.percent_only and (args.output_json or args.list_files):
+    if args.percent_only and (
+        args.output_json or args.print_descriptions or args.list_files
+    ):
         parser.error(
-            "`--percent-only` cannot be used with `--output-json` or `--list-files`."
+            "`--percent-only` cannot be used with `--output-json`, `--print-descriptions`, or `--list-files`."
         )
     args.scan_files = get_files_from_patterns(args.scan_files)
     args.exclude = get_files_from_patterns(args.exclude, MOCK_RESPONSES_PATH)
@@ -191,10 +200,12 @@ def find_coverage(properties, responses):
         output[prop_name] = {
             COVERAGE_KEYWORD: coverage_files if args.list_files else len(coverage_files)
         }
+        if args.print_descriptions and "description" in prop_content:
+            output[prop_name][DESCRIPTION_KEYWORD] = prop_content["description"]
 
         # If property is an enum, find coverage for each enum value
         if "enum" in prop_content:
-            for enum in prop_content["enum"]:
+            for i, enum in enumerate(prop_content["enum"]):
                 coverage_files = []
                 for file_name in responses:
                     if any(
@@ -209,6 +220,10 @@ def find_coverage(properties, responses):
                         coverage_files if args.list_files else len(coverage_files)
                     )
                 }
+                if args.print_descriptions:
+                    output[prop_name][enum][DESCRIPTION_KEYWORD] = prop_content[
+                        "enumDescriptions"
+                    ][i]
 
         # If property is an instance of a schema, find coverage for that schema
         if "$ref" in prop_content:
@@ -249,8 +264,10 @@ def print_output(output, indent=0):
         print(json.dumps(output, indent=2))
     else:
         for key, value in output.items():
-            if key != COVERAGE_KEYWORD:
+            if key not in {COVERAGE_KEYWORD, DESCRIPTION_KEYWORD}:
                 print("| " * indent + f"{key}: {value[COVERAGE_KEYWORD]}")
+                if args.print_descriptions and DESCRIPTION_KEYWORD in value:
+                    print("| " * indent + f"({value[DESCRIPTION_KEYWORD]})")
                 print_output(value, indent + 1)
 
 
@@ -272,6 +289,8 @@ for response_type in RESPONSE_TYPES:
             response_type_schema["properties"], mock_responses[response_type]
         ),
     }
+    if args.print_descriptions and "description" in response_type_schema:
+        output[response_type][DESCRIPTION_KEYWORD] = response_type_schema["description"]
 output["Total Coverage"] = {
     COVERAGE_KEYWORD: f"{round(covered_fields / total_fields * 100, 2)}%",
 }
