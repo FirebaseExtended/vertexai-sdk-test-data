@@ -28,6 +28,7 @@ from urllib.request import urlopen
 DISCOVERY_DOC_URL = "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1"
 SCHEMA_PREFIX = "GoogleCloudAiplatformV1beta1"
 COVERAGE_KEYWORD = "_coverage"
+EXCLUSIVE_KEYWORD = "_exclusive"
 RESPONSE_TYPES = ["GenerateContentResponse", "CountTokensResponse"]
 SCRIPT_DIR = os.path.dirname(__file__)
 MOCK_RESPONSES_PATH = os.path.join(SCRIPT_DIR, "..", "mock-responses")
@@ -86,13 +87,29 @@ def get_args():
         help="Exclude mock response files matching the given pattern(s) from being"
         " evaluated",
     )
+    parser.add_argument(
+        "--exclusive-fields",
+        metavar="PATTERN",
+        type=str,
+        nargs="+",
+        help="Output fields that are covered exclusively by the files matching the"
+        " given pattern(s)",
+    )
     args = parser.parse_args()
-    if args.percent_only and (args.output_json or args.list_files):
+    if args.percent_only and (
+        args.output_json or args.list_files or args.exclusive_fields
+    ):
         parser.error(
-            "`--percent-only` cannot be used with `--output-json` or `--list-files`."
+            "`--percent-only` cannot be combined with any of the following:\n"
+            "  `--output-json`\n"
+            "  `--list-files`\n"
+            "  `--new-files`"
         )
     args.scan_files = get_files_from_patterns(args.scan_files)
     args.exclude = get_files_from_patterns(args.exclude, MOCK_RESPONSES_PATH)
+    args.exclusive_fields = get_files_from_patterns(
+        args.exclusive_fields, MOCK_RESPONSES_PATH
+    )
     return args
 
 
@@ -191,6 +208,12 @@ def find_coverage(properties, responses):
         output[prop_name] = {
             COVERAGE_KEYWORD: coverage_files if args.list_files else len(coverage_files)
         }
+        if (
+            args.exclusive_fields
+            and coverage_files
+            and all(f in args.exclusive_fields for f in coverage_files)
+        ):
+            output[prop_name][EXCLUSIVE_KEYWORD] = True
 
         # If property is an enum, find coverage for each enum value
         if "enum" in prop_content:
@@ -209,6 +232,12 @@ def find_coverage(properties, responses):
                         coverage_files if args.list_files else len(coverage_files)
                     )
                 }
+                if (
+                    args.exclusive_fields
+                    and coverage_files
+                    and all(f in args.exclusive_fields for f in coverage_files)
+                ):
+                    output[prop_name][enum][EXCLUSIVE_KEYWORD] = True
 
         # If property is an instance of a schema, find coverage for that schema
         if "$ref" in prop_content:
@@ -249,8 +278,14 @@ def print_output(output, indent=0):
         print(json.dumps(output, indent=2))
     else:
         for key, value in output.items():
-            if key != COVERAGE_KEYWORD:
-                print("| " * indent + f"{key}: {value[COVERAGE_KEYWORD]}")
+            if key not in {COVERAGE_KEYWORD, EXCLUSIVE_KEYWORD}:
+                if value.get(EXCLUSIVE_KEYWORD):
+                    print(
+                        "| " * indent
+                        + f"\033[92m{key}: {value[COVERAGE_KEYWORD]} (exclusive)\033[0m"
+                    )
+                else:
+                    print("| " * indent + f"{key}: {value[COVERAGE_KEYWORD]}")
                 print_output(value, indent + 1)
 
 
@@ -262,17 +297,19 @@ output = {}
 # Find and print coverage for each response type
 for response_type in RESPONSE_TYPES:
     response_type_schema = schemas[SCHEMA_PREFIX + response_type]
+    files_of_type = list(mock_responses[response_type])
+    if args.exclusive_fields:
+        files_of_type = [f for f in files_of_type if f in args.exclusive_fields]
     output[response_type] = {
         COVERAGE_KEYWORD: (
-            list(mock_responses[response_type])
-            if args.list_files
-            else len(mock_responses[response_type])
+            list(files_of_type) if args.list_files else len(files_of_type)
         ),
         **find_coverage(
             response_type_schema["properties"], mock_responses[response_type]
         ),
     }
-output["Total Coverage"] = {
-    COVERAGE_KEYWORD: f"{round(covered_fields / total_fields * 100, 2)}%",
-}
+if not args.exclusive_fields:
+    output["Total Coverage"] = {
+        COVERAGE_KEYWORD: f"{round(covered_fields / total_fields * 100, 2)}%",
+    }
 print_output(output)
