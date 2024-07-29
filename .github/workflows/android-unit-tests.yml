@@ -1,0 +1,46 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Android Unit Tests
+
+on:
+  pull_request:
+    paths:
+      - "mock-responses**"
+      - ".github/workflows/android-unit-tests.yml" 
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clone Android SDK repo
+        uses: actions/checkout@v4
+        with:
+          repository: firebase/firebase-android-sdk
+          fetch-depth: 1
+          path: firebase-android-sdk
+      - name: Copy mock responses into SDK repo
+        run: |
+          mkdir firebase-android-sdk/firebase-vertexai/src/test/resources/vertexai-sdk-test-data
+          cp -r mock-responses firebase-android-sdk/firebase-vertexai/src/test/resources/vertexai-sdk-test-data
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.1.0
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+      - name: Run unit tests
+        run: ./gradlew :firebase-vertexai:check withErrorProne
+        working-directory: firebase-android-sdk
