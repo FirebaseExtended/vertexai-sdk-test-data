@@ -23,6 +23,7 @@ import os
 from argparse import ArgumentParser
 from collections import defaultdict
 from glob import glob
+from subprocess import getoutput
 from urllib.request import urlopen
 
 DISCOVERY_DOC_URL = "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1"
@@ -85,6 +86,14 @@ def get_args():
         nargs="+",
         help="Exclude mock response files matching the given pattern(s) from being"
         " evaluated",
+    )
+    parser.add_argument(
+        "--diff",
+        "-d",
+        type=str,
+        nargs=2,
+        metavar=("OLD_COMMIT", "NEW_COMMIT"),
+        help="Highlight the coverage difference between two commits",
     )
     args = parser.parse_args()
     if args.percent_only and (args.output_json or args.list_files):
@@ -254,25 +263,68 @@ def print_output(output, indent=0):
                 print_output(value, indent + 1)
 
 
-args = get_args()
-schemas = get_schemas()
-mock_responses = get_grouped_mock_responses()
-total_fields, covered_fields = 0, 0
-output = {}
-# Find and print coverage for each response type
-for response_type in RESPONSE_TYPES:
-    response_type_schema = schemas[SCHEMA_PREFIX + response_type]
-    output[response_type] = {
-        COVERAGE_KEYWORD: (
-            list(mock_responses[response_type])
-            if args.list_files
-            else len(mock_responses[response_type])
-        ),
-        **find_coverage(
-            response_type_schema["properties"], mock_responses[response_type]
-        ),
+def print_diff(old, new, indent=0):
+    colors = {
+        "blue": "\033[94m",
+        "green": "\033[92m",
+        "yellow": "\033[93m",
+        "red": "\033[91m",
+        "end": "\033[0m",
     }
-output["Total Coverage"] = {
-    COVERAGE_KEYWORD: f"{round(covered_fields / total_fields * 100, 2)}%",
-}
-print_output(output)
+
+    assert old.keys() == new.keys(), "Old and new commits have different keys in output"
+    for key in old:
+        if key != COVERAGE_KEYWORD:
+            if old[key][COVERAGE_KEYWORD] == new[key][COVERAGE_KEYWORD]:
+                print("| " * indent + f"{key}: {old[key][COVERAGE_KEYWORD]}")
+            else:
+                if old[key][COVERAGE_KEYWORD] == 0:
+                    color = "green"
+                elif new[key][COVERAGE_KEYWORD] == 0:
+                    color = "red"
+                elif old[key][COVERAGE_KEYWORD] > new[key][COVERAGE_KEYWORD]:
+                    color = "yellow"
+                else:
+                    color = "blue"
+
+                print(
+                    "| " * indent
+                    + f"{key}: {colors[color]}{old[key][COVERAGE_KEYWORD]} -> {new[key][COVERAGE_KEYWORD]}"
+                    + colors["end"]
+                )
+            print_diff(old[key], new[key], indent + 1)
+
+
+args = get_args()
+
+if args.diff:
+    current = getoutput(f"cd {SCRIPT_DIR} && git branch --show-current")
+    outputs = []
+    for i in range(2):
+        os.system(f"cd {SCRIPT_DIR} && git checkout {args.diff[i]} -q")
+        outputs.append(json.loads(getoutput(f"python3 {__file__} -j")))
+    print_diff(outputs[0], outputs[1])
+    os.system(f"cd {SCRIPT_DIR} && git checkout {current} -q")
+
+else:
+    schemas = get_schemas()
+    mock_responses = get_grouped_mock_responses()
+    total_fields, covered_fields = 0, 0
+    output = {}
+    # Find and print coverage for each response type
+    for response_type in RESPONSE_TYPES:
+        response_type_schema = schemas[SCHEMA_PREFIX + response_type]
+        output[response_type] = {
+            COVERAGE_KEYWORD: (
+                list(mock_responses[response_type])
+                if args.list_files
+                else len(mock_responses[response_type])
+            ),
+            **find_coverage(
+                response_type_schema["properties"], mock_responses[response_type]
+            ),
+        }
+    output["Total Coverage"] = {
+        COVERAGE_KEYWORD: f"{round(covered_fields / total_fields * 100, 2)}%",
+    }
+    print_output(output)
