@@ -74,6 +74,14 @@ def get_args():
         help="Disable color in output",
     )
     parser.add_argument(
+        "--ignore-fields",
+        "-i",
+        metavar="FIELDS",
+        type=str,
+        help="Ignore the fields in the given comma-separated list when calculating"
+        " coverage",
+    )
+    parser.add_argument(
         "--scan-files",
         "-s",
         metavar="PATTERN",
@@ -96,6 +104,9 @@ def get_args():
         parser.error(
             "`--percent-only` cannot be used with `--json-output` or `--list-files`."
         )
+    args.ignore_fields = (
+        set(args.ignore_fields.split(",")) if args.ignore_fields else set()
+    )
     args.scan_files = get_files_from_patterns(args.scan_files)
     args.exclude = get_files_from_patterns(args.exclude, MOCK_RESPONSES_PATH)
     return args
@@ -184,6 +195,8 @@ def find_coverage(properties, responses):
     output = {}
     # Look for each property in the mock response files
     for prop_name, prop_content in properties.items():
+        if prop_name in args.ignore_fields:
+            continue
         coverage_files = []
         for file_name in responses:
             if any(prop_name in part for part in responses[file_name]):
