@@ -68,6 +68,12 @@ def get_args():
         help="Output list of mock response files that cover each field",
     )
     parser.add_argument(
+        "--no-color",
+        "-n",
+        action="store_true",
+        help="Disable color in output",
+    )
+    parser.add_argument(
         "--scan-files",
         "-s",
         metavar="PATTERN",
@@ -235,17 +241,25 @@ def find_coverage(properties, responses):
     return output
 
 
-def print_output(output, indent=0):
+def print_output(output, indent=0, red_indent=0):
     """Print the coverage data."""
     if args.percent_only:
         print(output["Total Coverage"][COVERAGE_KEYWORD])
     elif args.json_output:
         print(json.dumps(output, indent=2))
     else:
+        color_red, color_end = "\033[91m", "\033[0m"
         for key, value in output.items():
             if key != COVERAGE_KEYWORD:
-                print("| " * indent + f"{key}: {value[COVERAGE_KEYWORD]}")
-                print_output(value, indent + 1)
+                color = not args.no_color and value[COVERAGE_KEYWORD] == 0
+                print(
+                    "| " * (indent - red_indent)
+                    + (color_red if color else "")
+                    + "| " * red_indent
+                    + f"{key}: {value[COVERAGE_KEYWORD]}"
+                    + (color_end if color else "")
+                )
+                print_output(value, indent + 1, red_indent + (color))
 
 
 args = get_args()
