@@ -265,7 +265,7 @@ def print_output(output, indent=0, red_indent=0):
         color_red, color_end = "\033[91m", "\033[0m"
         for key, value in output.items():
             if key == TOTAL_KEYWORD:
-                print(f"Total Coverage: {value}%")
+                print(f"Total Coverage: {value[NUM_KEYWORD]}%")
             elif key not in {NUM_KEYWORD, FILES_KEYWORD}:
                 color = not args.no_color and value[NUM_KEYWORD] == 0
                 print(
@@ -295,6 +295,6 @@ for response_type in RESPONSE_TYPES:
     }
     if args.list_files:
         output[response_type][FILES_KEYWORD] = list(mock_responses[response_type])
-output[TOTAL_KEYWORD] = round(covered_fields / total_fields * 100, 2)
+output[TOTAL_KEYWORD] = {NUM_KEYWORD: round(covered_fields / total_fields * 100, 2)}
 
 print_output(output)
