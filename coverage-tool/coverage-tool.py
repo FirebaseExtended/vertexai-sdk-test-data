@@ -26,10 +26,13 @@ from urllib.request import urlopen
 
 DISCOVERY_DOC_URL = "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1"
 SCHEMA_PREFIX = "GoogleCloudAiplatformV1beta1"
-COVERAGE_KEYWORD = "_coverage"
 RESPONSE_TYPES = ["GenerateContentResponse", "CountTokensResponse"]
 SCRIPT_DIR = os.path.dirname(__file__)
 MOCK_RESPONSES_PATH = os.path.join(SCRIPT_DIR, "..", "mock-responses")
+
+NUM_KEYWORD = "_coverage_num"
+FILES_KEYWORD = "_coverage_files"
+TOTAL_KEYWORD = "_total_coverage_percentage"
 
 
 def get_args():
@@ -204,9 +207,9 @@ def find_coverage(properties, responses):
         total_fields += 1
         if coverage_files:
             covered_fields += 1
-        output[prop_name] = {
-            COVERAGE_KEYWORD: coverage_files if args.list_files else len(coverage_files)
-        }
+        output[prop_name] = {NUM_KEYWORD: len(coverage_files)}
+        if args.list_files:
+            output[prop_name][FILES_KEYWORD] = coverage_files
 
         # If property is an enum, find coverage for each enum value
         if "enum" in prop_content:
@@ -220,11 +223,9 @@ def find_coverage(properties, responses):
                 total_fields += 1
                 if coverage_files:
                     covered_fields += 1
-                output[prop_name][enum] = {
-                    COVERAGE_KEYWORD: (
-                        coverage_files if args.list_files else len(coverage_files)
-                    )
-                }
+                output[prop_name][enum] = {NUM_KEYWORD: (len(coverage_files))}
+                if args.list_files:
+                    output[prop_name][enum][FILES_KEYWORD] = coverage_files
 
         # If property is an instance of a schema, find coverage for that schema
         if "$ref" in prop_content:
@@ -257,19 +258,22 @@ def find_coverage(properties, responses):
 def print_output(output, indent=0, red_indent=0):
     """Print the coverage data."""
     if args.percent_only:
-        print(output["Total Coverage"][COVERAGE_KEYWORD])
+        print(output[TOTAL_KEYWORD])
     elif args.json_output:
         print(json.dumps(output, indent=2))
     else:
         color_red, color_end = "\033[91m", "\033[0m"
         for key, value in output.items():
-            if key != COVERAGE_KEYWORD:
-                color = not args.no_color and value[COVERAGE_KEYWORD] == 0
+            if key == TOTAL_KEYWORD:
+                print(f"Total Coverage: {value}")
+            elif key not in {NUM_KEYWORD, FILES_KEYWORD}:
+                color = not args.no_color and value[NUM_KEYWORD] == 0
                 print(
                     "| " * (indent - red_indent)
                     + (color_red if color else "")
                     + "| " * red_indent
-                    + f"{key}: {value[COVERAGE_KEYWORD]}"
+                    + f"{key}: {value[NUM_KEYWORD]} "
+                    + str(value.get(FILES_KEYWORD) or "")
                     + (color_end if color else "")
                 )
                 print_output(value, indent + 1, red_indent + (color))
@@ -284,16 +288,13 @@ output = {}
 for response_type in RESPONSE_TYPES:
     response_type_schema = schemas[SCHEMA_PREFIX + response_type]
     output[response_type] = {
-        COVERAGE_KEYWORD: (
-            list(mock_responses[response_type])
-            if args.list_files
-            else len(mock_responses[response_type])
-        ),
+        NUM_KEYWORD: len(mock_responses[response_type]),
         **find_coverage(
             response_type_schema["properties"], mock_responses[response_type]
         ),
     }
-output["Total Coverage"] = {
-    COVERAGE_KEYWORD: f"{round(covered_fields / total_fields * 100, 2)}%",
-}
+    if args.list_files:
+        output[response_type][FILES_KEYWORD] = list(mock_responses[response_type])
+output[TOTAL_KEYWORD] = f"{round(covered_fields / total_fields * 100, 2)}%"
+
 print_output(output)
