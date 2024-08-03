@@ -18,9 +18,13 @@ import json
 from argparse import ArgumentParser
 from os.path import isfile
 
+# Keywords from coverage-tool.py
 NUM_KEYWORD = "_coverage_num"
 FILES_KEYWORD = "_coverage_files"
 TOTAL_KEYWORD = "_total_coverage_percentage"
+# Keywords for this script
+OLD_KEYWORD = "_old_num"
+NEW_KEYWORD = "_new_num"
 
 
 def get_args():
@@ -44,14 +48,45 @@ def get_args():
         action="store_true",
         help="Disable color in output",
     )
+    parser.add_argument(
+        "--all-fields",
+        "-a",
+        action="store_true",
+        help="Output all fields, not just the ones with changes",
+    )
     args = parser.parse_args()
     args.file1 = read_json(args.file1)
     args.file2 = read_json(args.file2)
     return args
 
 
-def print_output(old, new, indent=0):
-    """Print the diff between two coverage outputs."""
+def find_diff(old, new):
+    """
+    Find the diff between two coverage outputs, returning the old and new coverage
+    numbers for each field.
+    """
+    assert old.keys() == new.keys(), "Different keys in the coverage output files."
+    return {
+        key: {
+            OLD_KEYWORD: old[key][NUM_KEYWORD],
+            NEW_KEYWORD: new[key][NUM_KEYWORD],
+            **find_diff(old[key], new[key]),
+        }
+        for key in old
+        if key not in {NUM_KEYWORD, FILES_KEYWORD}
+    }
+
+
+def print_output(output, indent=0):
+    """Print the diff."""
+
+    def has_changes(field):
+        return field[OLD_KEYWORD] != field[NEW_KEYWORD] or any(
+            has_changes(value)
+            for key, value in field.items()
+            if key not in {OLD_KEYWORD, NEW_KEYWORD}
+        )
+
     colors = {
         "green": "\033[92m",
         "blue": "\033[94m",
@@ -60,27 +95,19 @@ def print_output(old, new, indent=0):
         "end": "\033[0m",
     }
 
-    if old.keys() != new.keys():
-        print(
-            "Different keys in the given coverage output files, using keys from second"
-            " file only."
-        )
-        print("Old keys: ", old.keys())
-        print("New keys: ", new.keys())
-
-    for key in new:
-        if key not in {NUM_KEYWORD, FILES_KEYWORD}:
-            if key not in old:
-                old[key] = {NUM_KEYWORD: 0}
-            if old[key][NUM_KEYWORD] == new[key][NUM_KEYWORD]:
-                print("| " * indent + f"{key}: {old[key][NUM_KEYWORD]}")
+    for key, value in output.items():
+        if key not in {OLD_KEYWORD, NEW_KEYWORD} and (
+            args.all_fields or has_changes(value)
+        ):
+            if value[OLD_KEYWORD] == value[NEW_KEYWORD]:
+                print("| " * indent + f"{key}: {value[OLD_KEYWORD]}")
             else:
                 if not args.no_color:
-                    if old[key][NUM_KEYWORD] == 0:
+                    if value[OLD_KEYWORD] == 0:
                         color = "green"
-                    elif new[key][NUM_KEYWORD] == 0:
+                    elif value[NEW_KEYWORD] == 0:
                         color = "red"
-                    elif old[key][NUM_KEYWORD] > new[key][NUM_KEYWORD]:
+                    elif value[OLD_KEYWORD] > value[NEW_KEYWORD]:
                         color = "yellow" if key != TOTAL_KEYWORD else "red"
                     else:
                         color = "blue" if key != TOTAL_KEYWORD else "green"
@@ -89,11 +116,12 @@ def print_output(old, new, indent=0):
                     "| " * indent
                     + f"{key if key != TOTAL_KEYWORD else 'Total Coverage'}: "
                     + (colors[color] if not args.no_color else "")
-                    + f"{old[key][NUM_KEYWORD]} -> {new[key][NUM_KEYWORD]}"
+                    + f"{value[OLD_KEYWORD]} -> {value[NEW_KEYWORD]}"
                     + (colors["end"] if not args.no_color else "")
                 )
-            print_output(old[key], new[key], indent + 1)
+            print_output(value, indent + 1)
 
 
 args = get_args()
-print_output(args.file1, args.file2)
+output = find_diff(args.file1, args.file2)
+print_output(output)
