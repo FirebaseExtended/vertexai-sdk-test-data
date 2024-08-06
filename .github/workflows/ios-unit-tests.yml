@@ -49,7 +49,7 @@ jobs:
           path: firebase-ios-sdk
       - name: Copy mock responses into SDK repo
         run: |
-          mkdir firebase-ios-sdk/FirebaseVertexAI/Tests/Unit/vertexai-sdk-test-data &&
+          rm firebase-ios-sdk/FirebaseVertexAI/Tests/Unit/vertexai-sdk-test-data/*
           cp -r mock-responses firebase-ios-sdk/FirebaseVertexAI/Tests/Unit/vertexai-sdk-test-data
       - name: Xcode
         run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app/Contents/Developer
