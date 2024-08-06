@@ -5,6 +5,7 @@ in unit testing of the Vertex AI for Firebase SDKs.
 ## Usage
 The mock responses are currently being used to test the Vertex AI for Firebase
 SDKs in the following repositories:
+- [firebase-android-sdk](https://github.com/firebase/firebase-android-sdk/)
 - [firebase-ios-sdk](https://github.com/firebase/firebase-ios-sdk/)
 - [firebase-js-sdk](https://github.com/firebase/firebase-js-sdk/)
 
