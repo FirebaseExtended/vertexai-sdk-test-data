@@ -17,7 +17,7 @@
 import json
 from argparse import ArgumentParser
 from os.path import isfile
-from . import NUM_KEYWORD, FILES_KEYWORD, TOTAL_KEYWORD
+from coverage_tool import NUM_KEYWORD, FILES_KEYWORD, TOTAL_KEYWORD
 
 # Keywords for this script
 OLD_KEYWORD = "_old_num"
