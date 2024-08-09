@@ -114,7 +114,7 @@ def get_schemas():
         with open(doc_path, "w") as doc:
             with urlopen(DISCOVERY_DOC_URL) as response:
                 doc.write(response.read().decode("utf-8"))
-    with open (doc_path) as f:
+    with open(doc_path) as f:
         return json.load(f)["schemas"]
 
 
@@ -138,7 +138,8 @@ def get_mock_responses_list():
 
 
 def load_mock_response(file_path):
-    """Return a mock response file's content as a list of dictionaries."""
+    """Return a mock response file's content as a list of dictionaries, where each
+    dictionary represents a part of the response."""
     with open(file_path) as f:
         lines = f.readlines()
     ans = []
@@ -170,7 +171,8 @@ def is_response_type(file_part, schema_props):
 
 
 def get_grouped_mock_responses():
-    """Return a dictionary of mock responses grouped by response type."""
+    """Return a dictionary of mock responses grouped by response type, where the key is
+    a response type and the value is a dictionary of file names to their content."""
     responses_content = {
         file_name: load_mock_response(os.path.join(MOCK_RESPONSES_PATH, file_name))
         for file_name in get_mock_responses_list()
@@ -191,7 +193,13 @@ def get_grouped_mock_responses():
 
 
 def find_coverage(properties, responses):
-    """Return a dictionary with coverage information for the given properties."""
+    """Return a dictionary with coverage information for the given properties.
+
+    @param properties: the "properties" field of a schema from the discovery doc
+    @param responses:  mock responses to find coverage in, as a dict where the key is a
+                       file name and value is a list of dictionaries, each representing
+                       a part of the response
+    """
     global total_fields, covered_fields
     output = {}
     # Look for each property in the mock response files
