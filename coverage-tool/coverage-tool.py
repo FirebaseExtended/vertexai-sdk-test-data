@@ -114,7 +114,8 @@ def get_schemas():
         with open(doc_path, "w") as doc:
             with urlopen(DISCOVERY_DOC_URL) as response:
                 doc.write(response.read().decode("utf-8"))
-    return json.load(open(doc_path))["schemas"]
+    with open (doc_path) as f:
+        return json.load(f)["schemas"]
 
 
 def get_mock_responses_list():
