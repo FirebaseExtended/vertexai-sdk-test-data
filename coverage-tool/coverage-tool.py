@@ -38,18 +38,15 @@ TOTAL_KEYWORD = "_total_coverage_percentage"
 def get_args():
     """Parse, validate, and return command line arguments."""
 
-    def get_files_from_patterns(pattern_list, root_dir="."):
-        files = set()
-        for pattern in pattern_list or []:
-            matches = {
-                path
-                for path in glob(pattern, recursive=True, root_dir=root_dir)
-                if os.path.isfile(os.path.join(root_dir, path))
-            }
-            if not matches:
-                parser.error(f"No matching files found for pattern: {pattern}")
-            files.update(matches)
-        return files
+    def get_files_from_patterns(pattern, root_dir="."):
+        matches = {
+            path
+            for path in glob(pattern, recursive=True, root_dir=root_dir)
+            if os.path.isfile(os.path.join(root_dir, path))
+        }
+        if not matches:
+            parser.error(f"No matching files found for pattern: {pattern}")
+        return matches
 
     parser = ArgumentParser()
     parser.add_argument(
@@ -80,7 +77,7 @@ def get_args():
         "--ignore-fields",
         "-i",
         metavar="FIELDS",
-        type=str,
+        type=lambda x: set(x.split(",")),
         help="Ignore the fields in the given comma-separated list when calculating"
         " coverage",
     )
@@ -88,7 +85,7 @@ def get_args():
         "--scan-files",
         "-s",
         metavar="PATTERN",
-        type=str,
+        type=lambda x: get_files_from_patterns(x),
         nargs="+",
         help="Scan files matching the given pattern(s) for names of mock response files"
         " (without the extension) to evaluate",
@@ -97,7 +94,7 @@ def get_args():
         "--exclude",
         "-e",
         metavar="PATTERN",
-        type=str,
+        type=lambda x: get_files_from_patterns(x, MOCK_RESPONSES_PATH),
         nargs="+",
         help="Exclude mock response files matching the given pattern(s) from being"
         " evaluated",
@@ -107,11 +104,6 @@ def get_args():
         parser.error(
             "`--percent-only` cannot be used with `--json-output` or `--list-files`."
         )
-    args.ignore_fields = (
-        set(args.ignore_fields.split(",")) if args.ignore_fields else set()
-    )
-    args.scan_files = get_files_from_patterns(args.scan_files)
-    args.exclude = get_files_from_patterns(args.exclude, MOCK_RESPONSES_PATH)
     return args
 
 
@@ -129,12 +121,17 @@ def get_mock_responses_list():
     """Return a list of mock response files to evaluate according to args."""
     mock_responses = sorted(os.listdir(MOCK_RESPONSES_PATH))
     if args.exclude:
-        mock_responses = [f for f in mock_responses if f not in args.exclude]
+        mock_responses = [
+            file_path
+            for file_path in mock_responses
+            if not any(file_path in files_set for files_set in args.exclude)
+        ]
     if args.scan_files:
         content = ""
-        for file_path in args.scan_files:
-            with open(file_path) as f:
-                content += f.read()
+        for files_set in args.scan_files:
+            for file_path in files_set:
+                with open(file_path) as f:
+                    content += f.read()
         mock_responses = [f for f in mock_responses if f.split(".")[0] in content]
     return mock_responses
 
@@ -198,7 +195,7 @@ def find_coverage(properties, responses):
     output = {}
     # Look for each property in the mock response files
     for prop_name, prop_content in properties.items():
-        if prop_name in args.ignore_fields:
+        if args.ignore_fields and prop_name in args.ignore_fields:
             continue
         coverage_files = []
         for file_name in responses:
