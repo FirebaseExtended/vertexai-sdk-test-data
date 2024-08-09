@@ -1,0 +1,64 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.\
+
+name: Comment coverage diff on PR
+
+on:
+  pull_request:
+    paths:
+      - "mock-responses**"
+      - ".github/workflows/coverage.yml"
+      - "coverage-tool**"
+
+jobs:
+  comment-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Find coverage on main
+        run: python3 coverage-tool/coverage-tool.py --json-output > main.json
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+      - name: Find coverage on PR branch
+        run: python3 coverage-tool/coverage-tool.py --json-output > branch.json
+      - name: Find coverage diff
+        run: |
+          {
+            echo "diff<<EOF"
+            python3 coverage-tool/diff-coverage.py --no-color main.json branch.json
+            echo EOF
+          } >> $GITHUB_ENV
+      - name: Find previous comment
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.number }}
+          body-includes: Coverage Diff
+      - name: Delete previous comment
+        if: ${{steps.find_comment.outputs.comment-id}}
+        uses: detomarco/delete-comment@850734dd44d8b15fef55b45252613b903ceb06f0
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+      - name: Comment on PR
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ### Coverage Diff
+            ```
+            ${{env.diff}}
+            ```
