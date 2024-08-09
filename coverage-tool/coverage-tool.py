@@ -186,7 +186,7 @@ def get_grouped_mock_responses():
         else:
             # Failure responses are not expected to match any response type
             if "failure" not in file_name:
-                raise Exception(f"File {file_name} does not match any response type.")
+                raise ValueError(f"File {file_name} does not match any response type.")
     return grouped_mock_responses
 
 
