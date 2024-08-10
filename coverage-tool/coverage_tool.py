@@ -32,7 +32,7 @@ MOCK_RESPONSES_PATH = os.path.join(SCRIPT_DIR, "..", "mock-responses")
 
 NUM_KEYWORD = "_coverage_num"
 FILES_KEYWORD = "_coverage_files"
-TOTAL_KEYWORD = "_total_coverage_percentage"
+TOTAL_KEYWORD = "Total Coverage"
 
 
 class CoverageTool:
@@ -275,22 +275,21 @@ class CoverageTool:
     def print_output(self, output, indent=0, red_indent=0):
         """Print the coverage data."""
         if self.args.percent_only:
-            print(output[TOTAL_KEYWORD])
+            print(output[TOTAL_KEYWORD][NUM_KEYWORD])
         elif self.args.json_output:
             print(json.dumps(output, indent=2))
         else:
             color_red, color_end = "\033[91m", "\033[0m"
             for key, value in output.items():
-                if key == TOTAL_KEYWORD:
-                    print(f"Total Coverage: {value[NUM_KEYWORD]}%")
-                elif key not in {NUM_KEYWORD, FILES_KEYWORD}:
+                if key not in {NUM_KEYWORD, FILES_KEYWORD}:
                     color = not self.args.no_color and value[NUM_KEYWORD] == 0
                     print(
                         "| " * (indent - red_indent)
                         + (color_red if color else "")
                         + "| " * red_indent
-                        + f"{key}: {value[NUM_KEYWORD]} "
+                        + f"{key}: {value[NUM_KEYWORD]}"
                         + str(value.get(FILES_KEYWORD) or "")
+                        + ("%" if key == TOTAL_KEYWORD else "")
                         + (color_end if color else "")
                     )
                     self.print_output(value, indent + 1, red_indent + (color))

@@ -96,8 +96,9 @@ class DiffCoverage:
             if key not in {OLD_KEYWORD, NEW_KEYWORD} and (
                 self.args.all_fields or has_changes(value)
             ):
+                percent = "%" if key == TOTAL_KEYWORD else ""
                 if value[OLD_KEYWORD] == value[NEW_KEYWORD]:
-                    print("| " * indent + f"{key}: {value[OLD_KEYWORD]}")
+                    print("| " * indent + f"{key}: {value[OLD_KEYWORD]}{percent}")
                 else:
                     if not self.args.no_color:
                         if value[OLD_KEYWORD] == 0:
@@ -111,9 +112,9 @@ class DiffCoverage:
 
                     print(
                         "| " * indent
-                        + f"{key if key != TOTAL_KEYWORD else 'Total Coverage'}: "
+                        + f"{key}: "
                         + (colors[color] if not self.args.no_color else "")
-                        + f"{value[OLD_KEYWORD]} -> {value[NEW_KEYWORD]}"
+                        + f"{value[OLD_KEYWORD]}{percent} -> {value[NEW_KEYWORD]}{percent}"
                         + (colors["end"] if not self.args.no_color else "")
                     )
                 self.print_output(value, indent + 1)
