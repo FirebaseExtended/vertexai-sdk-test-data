@@ -144,20 +144,14 @@ class CoverageTool:
     def load_mock_response(self, file_path):
         """Return a mock response file's content as a list of dictionaries, where each
         dictionary represents a part of the response."""
-        with open(file_path) as f:
-            lines = f.readlines()
-        ans = []
-        for n, line in enumerate(lines):
-            if line.strip() == "":
-                continue
-            elif line.startswith("data:"):
-                # For streaming responses
-                ans.append(json.loads(line[5:]))
-            else:
-                # For unary responses and last part of some streaming responses
-                ans.append(json.loads("".join(lines[n:])))
-                break
-        return ans
+        # Try to load file as a single JSON object
+        try:
+            with open(file_path) as f:
+                return [json.load(f)]
+        # Handle streaming response files with multiple parts
+        except json.JSONDecodeError:
+            with open(file_path) as f:
+                return [json.loads(line[5:]) for line in f if line.startswith("data:")]
 
     def is_response_type(self, file_part, schema_props):
         """Check if the given response file part matches the given schema properties."""
