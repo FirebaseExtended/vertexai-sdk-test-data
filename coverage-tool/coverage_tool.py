@@ -45,7 +45,8 @@ class CoverageTool:
     def get_args(self):
         """Parse, validate, and return command line arguments."""
 
-        def get_files_from_patterns(pattern, root_dir="."):
+        def get_files_from_pattern(pattern, root_dir="."):
+            """Return a set of file paths matching the given pattern."""
             matches = {
                 path
                 for path in glob(pattern, recursive=True, root_dir=root_dir)
@@ -92,7 +93,7 @@ class CoverageTool:
             "--scan-files",
             "-s",
             metavar="PATTERN",
-            type=lambda x: get_files_from_patterns(x),
+            type=get_files_from_pattern,
             nargs="+",
             help="Scan files matching the given pattern(s) for names of mock response files"
             " (without the extension) to evaluate",
@@ -101,7 +102,7 @@ class CoverageTool:
             "--exclude",
             "-e",
             metavar="PATTERN",
-            type=lambda x: get_files_from_patterns(x, MOCK_RESPONSES_PATH),
+            type=lambda x: get_files_from_pattern(x, MOCK_RESPONSES_PATH),
             nargs="+",
             help="Exclude mock response files matching the given pattern(s) from being"
             " evaluated",
