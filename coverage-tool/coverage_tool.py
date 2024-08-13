@@ -170,15 +170,16 @@ class CoverageTool:
     def get_grouped_mock_responses(self):
         """Return a dictionary of mock responses grouped by response type, where the key is
         a response type and the value is a dictionary of file names to their content."""
-        responses_content = {
-            file_name: self.load_mock_response(
+        grouped_mock_responses = {t: {} for t in RESPONSE_TYPES}
+        for file_name in self.get_mock_responses_list():
+            # Get the content of the mock response file
+            content = self.load_mock_response(
                 os.path.join(MOCK_RESPONSES_PATH, file_name)
             )
-            for file_name in self.get_mock_responses_list()
-        }
-        grouped_mock_responses = {t: {} for t in RESPONSE_TYPES}
-        # Check each file's first part against each response type
-        for file_name, content in responses_content.items():
+            if not content:
+                print(f"No data extracted from file {file_name}")
+                continue
+            # Check the first part of the response against each response type schema
             for response_type in RESPONSE_TYPES:
                 response_type_props = self.schemas[SCHEMA_PREFIX + response_type][
                     "properties"
