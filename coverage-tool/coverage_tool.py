@@ -23,6 +23,7 @@ import os
 import re
 from argparse import ArgumentParser
 from glob import glob
+from sys import stderr
 from urllib.request import urlopen
 
 DISCOVERY_DOC_URL = "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1"
@@ -177,7 +178,7 @@ class CoverageTool:
                 os.path.join(MOCK_RESPONSES_PATH, file_name)
             )
             if not content:
-                print(f"No data extracted from file {file_name}")
+                print(f"No data extracted from file {file_name}", file=stderr)
                 continue
             # Check the first part of the response against each response type schema
             for response_type in RESPONSE_TYPES:
@@ -192,7 +193,10 @@ class CoverageTool:
                 if not (
                     len(content) == 1 and len(content[0]) == 1 and "error" in content[0]
                 ):
-                    print(f"File {file_name} does not match any response type.")
+                    print(
+                        f"File {file_name} does not match any response type.",
+                        file=stderr,
+                    )
         return grouped_mock_responses
 
     def find_coverage(self, properties, responses):
