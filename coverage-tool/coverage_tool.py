@@ -20,6 +20,7 @@
 
 import json
 import os
+import re
 from argparse import ArgumentParser
 from glob import glob
 from urllib.request import urlopen
@@ -118,6 +119,17 @@ class CoverageTool:
 
     def get_mock_responses_list(self):
         """Return a list of mock response files to evaluate according to args."""
+
+        def filter_by_scan_files(mock_responses):
+            """Return mock responses that are mentioned in the given files to scan."""
+            pattern = re.compile(r"[a-zA-Z0-9-]+")
+            matches = set()
+            for files_set in self.args.scan_files:
+                for file_path in files_set:
+                    with open(file_path) as f:
+                        matches.update(pattern.findall(f.read()))
+            return [f for f in mock_responses if f.split(".")[0] in matches]
+
         mock_responses = sorted(os.listdir(MOCK_RESPONSES_PATH))
         if self.args.exclude:
             mock_responses = [
@@ -126,12 +138,7 @@ class CoverageTool:
                 if not any(file_path in files_set for files_set in self.args.exclude)
             ]
         if self.args.scan_files:
-            content = ""
-            for files_set in self.args.scan_files:
-                for file_path in files_set:
-                    with open(file_path) as f:
-                        content += f.read()
-            mock_responses = [f for f in mock_responses if f.split(".")[0] in content]
+            mock_responses = filter_by_scan_files(mock_responses)
         return mock_responses
 
     def load_mock_response(self, file_path):
