@@ -204,7 +204,7 @@ class CoverageTool:
         """
         output = {}
         # Look for each property in the mock response files
-        for prop_name, prop_content in properties.items():
+        for prop_name, prop_content in sorted(properties.items()):
             if self.args.ignore_fields and prop_name in self.args.ignore_fields:
                 continue
             coverage_files = []
