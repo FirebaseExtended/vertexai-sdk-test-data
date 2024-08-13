@@ -61,7 +61,8 @@ class CoverageTool:
             "--percent-only",
             "-p",
             action="store_true",
-            help="Print only the total coverage percentage",
+            help="Print only the total coverage percentage, takes precedence over other"
+            " arguments",
         )
         parser.add_argument(
             "--json-output",
@@ -95,8 +96,8 @@ class CoverageTool:
             metavar="PATTERN",
             type=get_files_from_pattern,
             nargs="+",
-            help="Scan files matching the given pattern(s) for names of mock response files"
-            " (without the extension) to evaluate",
+            help="Scan files matching the given pattern(s) for names of mock response"
+            " files (without the extension) to evaluate",
         )
         parser.add_argument(
             "--exclude",
@@ -108,10 +109,6 @@ class CoverageTool:
             " evaluated",
         )
         args = parser.parse_args()
-        if args.percent_only and (args.json_output or args.list_files):
-            parser.error(
-                "`--percent-only` cannot be used with `--json-output` or `--list-files`."
-            )
         return args
 
     def get_schemas(self):
