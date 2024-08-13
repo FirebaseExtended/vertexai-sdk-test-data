@@ -188,11 +188,11 @@ class CoverageTool:
                     grouped_mock_responses[response_type][file_name] = content
                     break
             else:
-                # Failure responses are not expected to match any response type
-                if "failure" not in file_name:
-                    raise ValueError(
-                        f"File {file_name} does not match any response type."
-                    )
+                # Error responses are not expected to match any response type
+                if not (
+                    len(content) == 1 and len(content[0]) == 1 and "error" in content[0]
+                ):
+                    print(f"File {file_name} does not match any response type.")
         return grouped_mock_responses
 
     def find_coverage(self, properties, responses):
