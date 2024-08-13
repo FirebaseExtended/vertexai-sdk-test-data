@@ -19,46 +19,16 @@ from argparse import ArgumentParser
 from os.path import isfile
 from coverage_tool import NUM_KEYWORD, FILES_KEYWORD, TOTAL_KEYWORD
 
-# Keywords for this script
 OLD_KEYWORD = "_old_num"
 NEW_KEYWORD = "_new_num"
 
 
 class DiffCoverage:
-    def __init__(self):
-        self.args = self.get_args()
-
-    def get_args(self):
-        """Parse, validate, and return command line arguments."""
-
-        def read_json(file):
-            if not isfile(file):
-                parser.error(f"File {file} does not exist.")
-            return json.load(open(file))
-
-        parser = ArgumentParser()
-        parser.add_argument(
-            "file1", metavar="FILE", type=str, help="First coverage output in JSON"
-        )
-        parser.add_argument(
-            "file2", metavar="FILE", type=str, help="Second coverage output in JSON"
-        )
-        parser.add_argument(
-            "--no-color",
-            "-n",
-            action="store_true",
-            help="Disable color in output",
-        )
-        parser.add_argument(
-            "--all-fields",
-            "-a",
-            action="store_true",
-            help="Output all fields, not just the ones with changes",
-        )
-        args = parser.parse_args()
-        args.file1 = read_json(args.file1)
-        args.file2 = read_json(args.file2)
-        return args
+    def __init__(self, file1, file2, no_color=False, all_fields=False):
+        self.file1 = file1
+        self.file2 = file2
+        self.no_color = no_color
+        self.all_fields = all_fields
 
     def find_diff(self, old, new):
         """Find the diff between two coverage outputs, returning the old and new
@@ -94,13 +64,13 @@ class DiffCoverage:
 
         for key, value in output.items():
             if key not in {OLD_KEYWORD, NEW_KEYWORD} and (
-                self.args.all_fields or has_changes(value)
+                self.all_fields or has_changes(value)
             ):
                 percent = "%" if key == TOTAL_KEYWORD else ""
                 if value[OLD_KEYWORD] == value[NEW_KEYWORD]:
                     print("| " * indent + f"{key}: {value[OLD_KEYWORD]}{percent}")
                 else:
-                    if not self.args.no_color:
+                    if not self.no_color:
                         if value[OLD_KEYWORD] == 0:
                             color = "green"
                         elif value[NEW_KEYWORD] == 0:
@@ -113,16 +83,52 @@ class DiffCoverage:
                     print(
                         "| " * indent
                         + f"{key}: "
-                        + (colors[color] if not self.args.no_color else "")
+                        + (colors[color] if not self.no_color else "")
                         + f"{value[OLD_KEYWORD]}{percent} -> {value[NEW_KEYWORD]}{percent}"
-                        + (colors["end"] if not self.args.no_color else "")
+                        + (colors["end"] if not self.no_color else "")
                     )
                 self.print_output(value, indent + 1)
 
     def main(self):
-        output = self.find_diff(self.args.file1, self.args.file2)
+        output = self.find_diff(self.file1, self.file2)
         self.print_output(output)
 
 
+def get_args():
+    """Parse, validate, and return command line arguments."""
+
+    def read_json(file):
+        if not isfile(file):
+            parser.error(f"File {file} does not exist.")
+        return json.load(open(file))
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "file1", metavar="FILE", type=read_json, help="First coverage output in JSON"
+    )
+    parser.add_argument(
+        "file2", metavar="FILE", type=read_json, help="Second coverage output in JSON"
+    )
+    parser.add_argument(
+        "--no-color",
+        "-n",
+        action="store_true",
+        help="Disable color in output",
+    )
+    parser.add_argument(
+        "--all-fields",
+        "-a",
+        action="store_true",
+        help="Output all fields, not just the ones with changes",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    tool = DiffCoverage(**vars(args))
+    tool.main()
+
+
 if __name__ == "__main__":
-    DiffCoverage().main()
+    main()

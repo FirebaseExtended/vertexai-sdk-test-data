@@ -38,80 +38,27 @@ TOTAL_KEYWORD = "Total Coverage"
 
 
 class CoverageTool:
-    def __init__(self):
-        self.args = self.get_args()
+    def __init__(
+        self,
+        percent_only=False,
+        json_output=False,
+        list_files=False,
+        no_color=False,
+        ignore_fields=None,
+        scan_files=None,
+        exclude=None,
+    ):
+        self.percent_only = percent_only
+        self.json_output = json_output
+        self.list_files = list_files
+        self.no_color = no_color
+        self.ignore_fields = ignore_fields
+        self.scan_files = scan_files
+        self.exclude = exclude
+
         self.schemas = self.get_schemas()
         self.mock_responses = self.get_grouped_mock_responses()
         self.total_fields, self.covered_fields = 0, 0
-
-    def get_args(self):
-        """Parse, validate, and return command line arguments."""
-
-        def get_files_from_pattern(pattern, root_dir="."):
-            """Return a set of file paths matching the given pattern."""
-            matches = {
-                path
-                for path in glob(pattern, recursive=True, root_dir=root_dir)
-                if os.path.isfile(os.path.join(root_dir, path))
-            }
-            if not matches:
-                parser.error(f"No matching files found for pattern: {pattern}")
-            return matches
-
-        parser = ArgumentParser()
-        parser.add_argument(
-            "--percent-only",
-            "-p",
-            action="store_true",
-            help="Print only the total coverage percentage, takes precedence over other"
-            " arguments",
-        )
-        parser.add_argument(
-            "--json-output",
-            "-j",
-            action="store_true",
-            help="Output the coverage data as JSON",
-        )
-        parser.add_argument(
-            "--list-files",
-            "-l",
-            action="store_true",
-            help="Output list of mock response files that cover each field",
-        )
-        parser.add_argument(
-            "--no-color",
-            "-n",
-            action="store_true",
-            help="Disable color in output",
-        )
-        parser.add_argument(
-            "--ignore-fields",
-            "-i",
-            metavar="FIELDS",
-            type=lambda x: set(x.split(",")),
-            help="Ignore the fields in the given comma-separated list when calculating"
-            " coverage",
-        )
-        parser.add_argument(
-            "--scan-files",
-            "-s",
-            metavar="PATTERN",
-            type=get_files_from_pattern,
-            nargs="+",
-            help="Scan files matching the given pattern(s) for names of mock response"
-            " files (without the extension) to evaluate",
-        )
-        parser.add_argument(
-            "--exclude",
-            "-e",
-            metavar="PATTERN",
-            type=lambda x: get_files_from_pattern(x, MOCK_RESPONSES_PATH),
-            nargs="+",
-            help="Exclude mock response files matching the given pattern(s) from being"
-            " evaluated",
-        )
-        args = parser.parse_args()
-        return args
 
     def get_schemas(self):
         """Fetch discovery document and return its schemas."""
@@ -125,20 +72,20 @@ class CoverageTool:
             """Return mock responses that are mentioned in the given files to scan."""
             pattern = re.compile(r"[a-zA-Z0-9-]+")
             matches = set()
-            for files_set in self.args.scan_files:
+            for files_set in self.scan_files:
                 for file_path in files_set:
                     with open(file_path) as f:
                         matches.update(pattern.findall(f.read()))
             return [f for f in mock_responses if f.split(".")[0] in matches]
 
         mock_responses = sorted(os.listdir(MOCK_RESPONSES_PATH))
-        if self.args.exclude:
+        if self.exclude:
             mock_responses = [
                 file_path
                 for file_path in mock_responses
-                if not any(file_path in files_set for files_set in self.args.exclude)
+                if not any(file_path in files_set for files_set in self.exclude)
             ]
-        if self.args.scan_files:
+        if self.scan_files:
             mock_responses = filter_by_scan_files(mock_responses)
         return mock_responses
 
@@ -210,7 +157,7 @@ class CoverageTool:
         output = {}
         # Look for each property in the mock response files
         for prop_name, prop_content in sorted(properties.items()):
-            if self.args.ignore_fields and prop_name in self.args.ignore_fields:
+            if self.ignore_fields and prop_name in self.ignore_fields:
                 continue
             coverage_files = []
             for file_name in responses:
@@ -220,7 +167,7 @@ class CoverageTool:
             if coverage_files:
                 self.covered_fields += 1
             output[prop_name] = {NUM_KEYWORD: len(coverage_files)}
-            if self.args.list_files:
+            if self.list_files:
                 output[prop_name][FILES_KEYWORD] = coverage_files
 
             # If property is an enum, find coverage for each enum value
@@ -236,7 +183,7 @@ class CoverageTool:
                     if coverage_files:
                         self.covered_fields += 1
                     output[prop_name][enum] = {NUM_KEYWORD: (len(coverage_files))}
-                    if self.args.list_files:
+                    if self.list_files:
                         output[prop_name][enum][FILES_KEYWORD] = coverage_files
 
             # If property is an instance of a schema, find coverage for that schema
@@ -273,15 +220,15 @@ class CoverageTool:
 
     def print_output(self, output, indent=0, red_indent=0):
         """Print the coverage data."""
-        if self.args.percent_only:
+        if self.percent_only:
             print(output[TOTAL_KEYWORD][NUM_KEYWORD])
-        elif self.args.json_output:
+        elif self.json_output:
             print(json.dumps(output, indent=2))
         else:
             color_red, color_end = "\033[91m", "\033[0m"
             for key, value in output.items():
                 if key not in {NUM_KEYWORD, FILES_KEYWORD}:
-                    color = not self.args.no_color and value[NUM_KEYWORD] == 0
+                    color = value[NUM_KEYWORD] == 0 and not self.no_color
                     print(
                         "| " * (indent - red_indent)
                         + (color_red if color else "")
@@ -305,7 +252,7 @@ class CoverageTool:
                     self.mock_responses[response_type],
                 ),
             }
-            if self.args.list_files:
+            if self.list_files:
                 output[response_type][FILES_KEYWORD] = list(
                     self.mock_responses[response_type]
                 )
@@ -315,5 +262,80 @@ class CoverageTool:
         self.print_output(output)
 
 
+def get_args():
+    """Parse, validate, and return command line arguments."""
+
+    def get_files_from_pattern(pattern, root_dir="."):
+        """Return a set of file paths matching the given pattern."""
+        matches = {
+            path
+            for path in glob(pattern, recursive=True, root_dir=root_dir)
+            if os.path.isfile(os.path.join(root_dir, path))
+        }
+        if not matches:
+            parser.error(f"No matching files found for pattern: {pattern}")
+        return matches
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--percent-only",
+        "-p",
+        action="store_true",
+        help="Print only the total coverage percentage, takes precedence over other"
+        " arguments",
+    )
+    parser.add_argument(
+        "--json-output",
+        "-j",
+        action="store_true",
+        help="Output the coverage data as JSON",
+    )
+    parser.add_argument(
+        "--list-files",
+        "-l",
+        action="store_true",
+        help="Output list of mock response files that cover each field",
+    )
+    parser.add_argument(
+        "--no-color",
+        "-n",
+        action="store_true",
+        help="Disable color in output",
+    )
+    parser.add_argument(
+        "--ignore-fields",
+        "-i",
+        metavar="FIELDS",
+        type=lambda x: set(x.split(",")),
+        help="Ignore the fields in the given comma-separated list when calculating"
+        " coverage",
+    )
+    parser.add_argument(
+        "--scan-files",
+        "-s",
+        metavar="PATTERN",
+        type=get_files_from_pattern,
+        nargs="+",
+        help="Scan files matching the given pattern(s) for names of mock response"
+        " files (without the extension) to evaluate",
+    )
+    parser.add_argument(
+        "--exclude",
+        "-e",
+        metavar="PATTERN",
+        type=lambda x: get_files_from_pattern(x, MOCK_RESPONSES_PATH),
+        nargs="+",
+        help="Exclude mock response files matching the given pattern(s) from being"
+        " evaluated",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    tool = CoverageTool(**vars(args))
+    tool.main()
+
+
 if __name__ == "__main__":
-    CoverageTool().main()
+    main()
