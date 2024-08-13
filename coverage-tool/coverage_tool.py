@@ -115,14 +115,9 @@ class CoverageTool:
         return args
 
     def get_schemas(self):
-        """Download discovery document and return its schemas."""
-        doc_path = os.path.join(SCRIPT_DIR, "discovery_doc.json")
-        if not os.path.exists(doc_path):
-            with open(doc_path, "w") as doc:
-                with urlopen(DISCOVERY_DOC_URL) as response:
-                    doc.write(response.read().decode("utf-8"))
-        with open(doc_path) as f:
-            return json.load(f)["schemas"]
+        """Fetch discovery document and return its schemas."""
+        with urlopen(DISCOVERY_DOC_URL) as response:
+            return json.load(response)["schemas"]
 
     def get_mock_responses_list(self):
         """Return a list of mock response files to evaluate according to args."""
