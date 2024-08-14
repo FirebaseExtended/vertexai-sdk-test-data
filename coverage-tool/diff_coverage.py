@@ -62,6 +62,13 @@ class DiffCoverage:
             "end": "\033[0m",
         }
 
+        emojis = {
+            "green": "✅",
+            "blue": "🔵",
+            "yellow": "🟡",
+            "red": "❌",
+        }
+
         for key, value in output.items():
             if key not in {OLD_KEYWORD, NEW_KEYWORD} and (
                 self.all_fields or has_changes(value)
@@ -70,22 +77,21 @@ class DiffCoverage:
                 if value[OLD_KEYWORD] == value[NEW_KEYWORD]:
                     print("| " * indent + f"{key}: {value[OLD_KEYWORD]}{percent}")
                 else:
-                    if not self.no_color:
-                        if value[OLD_KEYWORD] == 0:
-                            color = "green"
-                        elif value[NEW_KEYWORD] == 0:
-                            color = "red"
-                        elif value[OLD_KEYWORD] > value[NEW_KEYWORD]:
-                            color = "yellow" if key != TOTAL_KEYWORD else "red"
-                        else:
-                            color = "blue" if key != TOTAL_KEYWORD else "green"
+                    if value[OLD_KEYWORD] == 0:
+                        color = "green"
+                    elif value[NEW_KEYWORD] == 0:
+                        color = "red"
+                    elif value[OLD_KEYWORD] > value[NEW_KEYWORD]:
+                        color = "yellow" if key != TOTAL_KEYWORD else "red"
+                    else:
+                        color = "blue" if key != TOTAL_KEYWORD else "green"
 
                     print(
                         "| " * indent
                         + f"{key}: "
                         + (colors[color] if not self.no_color else "")
                         + f"{value[OLD_KEYWORD]}{percent} -> {value[NEW_KEYWORD]}{percent}"
-                        + (colors["end"] if not self.no_color else "")
+                        + (colors["end"] if not self.no_color else f" {emojis[color]}")
                     )
                 self.print_output(value, indent + 1)
 
@@ -113,7 +119,7 @@ def get_args():
         "--no-color",
         "-n",
         action="store_true",
-        help="Disable color in output",
+        help="Disable color in output and add emojis",
     )
     parser.add_argument(
         "--all-fields",
