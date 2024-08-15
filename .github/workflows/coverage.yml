@@ -1,0 +1,63 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Comment coverage diff on PR
+
+on:
+  pull_request:
+    paths:
+      - "mock-responses**"
+      - "coverage-tool**"
+      - ".github/workflows/coverage.yml"
+
+jobs:
+  comment-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Find coverage on PR branch
+        run: python3 coverage-tool/coverage_tool.py --json-output > head.json
+      - name: Checkout mock-responses from base branch
+        run: |
+          rm -rf mock-responses
+          git checkout ${{ github.event.pull_request.base.sha }} -- mock-responses
+      - name: Find coverage on base branch
+        run: python3 coverage-tool/coverage_tool.py --json-output > base.json
+      - name: Find coverage diff
+        run: |
+          {
+            echo "diff<<EOF"
+            python3 coverage-tool/diff_coverage.py --no-color base.json head.json
+            echo EOF
+          } >> $GITHUB_ENV
+      - name: Find previous comment
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.number }}
+          body-includes: Coverage Diff
+      - name: Comment on PR
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043
+        with:
+          issue-number: ${{ github.event.number }}
+          # if no previous comment, a new comment will be created due to empty comment-id
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ### Coverage Diff
+            ```
+            ${{ env.diff || 'Coverage is identical' }}
+            ```

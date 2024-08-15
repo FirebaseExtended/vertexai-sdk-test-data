@@ -22,6 +22,28 @@ from coverage_tool import NUM_KEYWORD, FILES_KEYWORD, TOTAL_KEYWORD
 OLD_KEYWORD = "_old_num"
 NEW_KEYWORD = "_new_num"
 
+COLORS = {
+    "green": "\033[92m",
+    "blue": "\033[94m",
+    "yellow": "\033[93m",
+    "red": "\033[91m",
+    "end": "\033[0m",
+}
+
+EMOJIS = {
+    "green": "✅",
+    "blue": "🔵",
+    "yellow": "🟡",
+    "red": "❌",
+}
+
+COLOR_DESC = {
+    "green": "total coverage increase",
+    "blue": "files number increase, total coverage unaffected",
+    "yellow": "files number decrease, total coverage unaffected",
+    "red": "total coverage decrease",
+}
+
 
 class DiffCoverage:
     def __init__(self, file1, file2, no_color=False, all_fields=False):
@@ -44,54 +66,59 @@ class DiffCoverage:
             if key not in {NUM_KEYWORD, FILES_KEYWORD}
         }
 
-    def print_output(self, output, indent=0):
-        """Print the diff."""
-
-        def has_changes(field):
-            return field[OLD_KEYWORD] != field[NEW_KEYWORD] or any(
-                has_changes(value)
-                for key, value in field.items()
-                if key not in {OLD_KEYWORD, NEW_KEYWORD}
-            )
-
-        colors = {
-            "green": "\033[92m",
-            "blue": "\033[94m",
-            "yellow": "\033[93m",
-            "red": "\033[91m",
-            "end": "\033[0m",
-        }
-
-        for key, value in output.items():
-            if key not in {OLD_KEYWORD, NEW_KEYWORD} and (
-                self.all_fields or has_changes(value)
-            ):
+    def get_output(self, diff, indent=0):
+        """Return the diff to output as a string."""
+        output = ""
+        for key, value in diff.items():
+            if key not in {OLD_KEYWORD, NEW_KEYWORD}:
                 percent = "%" if key == TOTAL_KEYWORD else ""
                 if value[OLD_KEYWORD] == value[NEW_KEYWORD]:
-                    print("| " * indent + f"{key}: {value[OLD_KEYWORD]}{percent}")
+                    inner_output = self.get_output(value, indent + 1)
+                    if inner_output or self.all_fields:
+                        output += (
+                            "| " * indent
+                            + f"{key}: {value[OLD_KEYWORD]}{percent}\n"
+                            + inner_output
+                        )
                 else:
-                    if not self.no_color:
-                        if value[OLD_KEYWORD] == 0:
-                            color = "green"
-                        elif value[NEW_KEYWORD] == 0:
-                            color = "red"
-                        elif value[OLD_KEYWORD] > value[NEW_KEYWORD]:
-                            color = "yellow" if key != TOTAL_KEYWORD else "red"
-                        else:
-                            color = "blue" if key != TOTAL_KEYWORD else "green"
+                    if value[OLD_KEYWORD] == 0:
+                        color = "green"
+                    elif value[NEW_KEYWORD] == 0:
+                        color = "red"
+                    elif value[OLD_KEYWORD] > value[NEW_KEYWORD]:
+                        color = "yellow" if key != TOTAL_KEYWORD else "red"
+                    else:
+                        color = "blue" if key != TOTAL_KEYWORD else "green"
 
-                    print(
+                    output += (
                         "| " * indent
                         + f"{key}: "
-                        + (colors[color] if not self.no_color else "")
+                        + (COLORS[color] if not self.no_color else "")
                         + f"{value[OLD_KEYWORD]}{percent} -> {value[NEW_KEYWORD]}{percent}"
-                        + (colors["end"] if not self.no_color else "")
+                        + (COLORS["end"] if not self.no_color else f" {EMOJIS[color]}")
+                        + "\n"
+                        + self.get_output(value, indent + 1)
                     )
-                self.print_output(value, indent + 1)
+        return output
+
+    def get_legend(self):
+        """Return a legend for the colors as a string."""
+        output = "Legend:\n"
+        for color, meaning in COLOR_DESC.items():
+            if not self.no_color:
+                output += (
+                    f"{COLORS[color]}{color.ljust(6)}{COLORS['end']} : {meaning}\n"
+                )
+            else:
+                output += f"{EMOJIS[color]} : {meaning}\n"
+        return output
 
     def main(self):
-        output = self.find_diff(self.file1, self.file2)
-        self.print_output(output)
+        diff = self.find_diff(self.file1, self.file2)
+        output = self.get_output(diff)
+        if output:
+            print(output)
+            print(self.get_legend(), end="")
 
 
 def get_args():
@@ -113,7 +140,7 @@ def get_args():
         "--no-color",
         "-n",
         action="store_true",
-        help="Disable color in output",
+        help="Disable color in output and add emojis",
     )
     parser.add_argument(
         "--all-fields",
