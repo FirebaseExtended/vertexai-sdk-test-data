@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": 400,
+    "message": "Invalid CachedContent name: 1234567890.",
+    "status": "INVALID_ARGUMENT"
+  }
+}

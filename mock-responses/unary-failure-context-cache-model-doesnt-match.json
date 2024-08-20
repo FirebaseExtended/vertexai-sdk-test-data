@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": 400,
+    "message": "Cached content model does not match the model in the request.",
+    "status": "INVALID_ARGUMENT"
+  }
+}
