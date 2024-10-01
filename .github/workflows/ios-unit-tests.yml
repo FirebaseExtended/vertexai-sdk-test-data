@@ -57,7 +57,7 @@ jobs:
         run: scripts/setup_spm_tests.sh
         working-directory: firebase-ios-sdk
       - name: Switch to iPhone 16 Simulator
-        run: sed -i '' 's/platform=iOS Simulator,name=iPhone 15/platform=iOS Simulator,name=iPhone 16/' scripts/build.sh
+        run: sed -i '' 's/platform=iOS Simulator,name=iPhone 15/platform=iOS Simulator,name=iPhone 16,OS=18.0/' scripts/build.sh
         working-directory: firebase-ios-sdk
       - name: Run unit tests
         run: scripts/build.sh FirebaseVertexAIUnit ${{ matrix.target }} spm
