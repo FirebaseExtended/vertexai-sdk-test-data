@@ -8,7 +8,10 @@
               "name": "functionName",
               "args": {
                 "original_title": "Longer String",
-                "current": true
+                "current": true,
+                "testObject": {
+                  "testProperty": "string property"
+                }
               }
             }
           }
