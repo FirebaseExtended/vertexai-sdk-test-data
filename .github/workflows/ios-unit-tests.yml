@@ -32,10 +32,9 @@ jobs:
     strategy:
       matrix:
         target: [iOS, macOS, catalyst, tvOS, visionOS]
-        os: [macos-14]
         include:
-          - os: macos-14
-            xcode: Xcode_15.2
+          - os: macos-15
+            xcode: Xcode_16
     runs-on: ${{ matrix.os }}
     env:
       FIREBASECI_USE_LATEST_GOOGLEAPPMEASUREMENT: 1
