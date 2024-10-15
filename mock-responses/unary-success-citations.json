@@ -50,7 +50,12 @@
           {
             "startIndex": 130,
             "endIndex": 265,
-            "title": "some-citation-2"
+            "title": "some-citation-2",
+            "publicationDate": {
+              "year": 2019,
+              "month": 5,
+              "day": 10
+            }
           },
           {
             "startIndex": 272,
