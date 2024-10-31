@@ -26,7 +26,7 @@ from glob import glob
 from sys import stderr
 from urllib.request import urlopen
 
-DISCOVERY_DOC_URL = "https://aiplatform.googleapis.com/$discovery/rest?version=v1beta1"
+DISCOVERY_DOC_URL = "https://firebasevertexai.googleapis.com/$discovery/rest?version=v1beta"
 SCHEMA_PREFIX = "GoogleCloudAiplatformV1beta1"
 RESPONSE_TYPES = ["GenerateContentResponse", "CountTokensResponse"]
 SCRIPT_DIR = os.path.dirname(__file__)
