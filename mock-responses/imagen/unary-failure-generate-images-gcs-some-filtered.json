@@ -1,0 +1,15 @@
+{
+  "predictions": [
+    {
+      "mimeType": "image/jpeg",
+      "gcsUri": "gs://test-project-id-1234.firebasestorage.app/images/1234567890123/sample_0.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "gcsUri": "gs://test-project-id-1234.firebasestorage.app/images/1234567890123/sample_1.jpg"
+    },
+    {
+      "raiFilteredReason": "Your current safety filter threshold filtered out 2 generated images. You will not be charged for blocked images. Try rephrasing the prompt. If you think this was an error, send feedback."
+    }
+  ]
+}
