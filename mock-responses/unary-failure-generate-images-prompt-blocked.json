@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": 400,
+    "message": "Image generation failed with the following error: The prompt could not be submitted. This prompt contains sensitive words that violate Google's Responsible AI practices. Try rephrasing the prompt. If you think this was an error, send feedback. Support codes: 42876398",
+    "status": "INVALID_ARGUMENT"
+  }
+}

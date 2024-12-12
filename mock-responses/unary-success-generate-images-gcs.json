@@ -1,0 +1,20 @@
+{
+  "predictions": [
+    {
+      "mimeType": "image/jpeg",
+      "gcsUri": "gs://test-project-id-1234.firebasestorage.app/images/1234567890123/sample_0.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "gcsUri": "gs://test-project-id-1234.firebasestorage.app/images/1234567890123/sample_1.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "gcsUri": "gs://test-project-id-1234.firebasestorage.app/images/1234567890123/sample_2.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "gcsUri": "gs://test-project-id-1234.firebasestorage.app/images/1234567890123/sample_3.jpg"
+    }
+  ]
+}
