@@ -30,7 +30,7 @@ DISCOVERY_DOC_URL = "https://firebasevertexai.googleapis.com/$discovery/rest?ver
 SCHEMA_PREFIX = "GoogleCloudAiplatformV1beta1"
 RESPONSE_TYPES = ["GenerateContentResponse", "CountTokensResponse"]
 SCRIPT_DIR = os.path.dirname(__file__)
-MOCK_RESPONSES_PATH = os.path.join(SCRIPT_DIR, "..", "mock-responses")
+MOCK_RESPONSES_PATH = os.path.join(SCRIPT_DIR, "..", "mock-responses", "vertexai")
 
 NUM_KEYWORD = "_coverage_num"
 FILES_KEYWORD = "_coverage_files"
