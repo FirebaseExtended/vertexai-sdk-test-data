@@ -1,0 +1,34 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Safety Failure incoming: "
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "MAX_TOKENS",
+      "avgLogprobs": -0.10111037492752076
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 7,
+    "candidatesTokenCount": 20,
+    "totalTokenCount": 27,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 7
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 20
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.0-flash"
+}
