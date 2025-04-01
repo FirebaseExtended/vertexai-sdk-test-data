@@ -9,7 +9,7 @@
         ],
         "role": "model"
       },
-      "finishReason": "MAX_TOKENS",
+      "finishReason": "SAFETY",
       "avgLogprobs": -0.14098815917968749
     }
   ],
