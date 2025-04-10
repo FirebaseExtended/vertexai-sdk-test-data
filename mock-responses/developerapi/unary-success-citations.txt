@@ -10,15 +10,36 @@
         "role": "model"
       },
       "finishReason": "STOP",
+      "safetyRatings": [
+        {
+          "category": "HARM_CATEGORY_HATE_SPEECH",
+          "probability": "NEGLIGIBLE"
+        },
+        {
+          "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+          "probability": "NEGLIGIBLE"
+        },
+        {
+          "category": "HARM_CATEGORY_HARASSMENT",
+          "probability": "NEGLIGIBLE"
+        },
+        {
+          "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          "probability": "NEGLIGIBLE"
+        }
+      ],
       "citationMetadata": {
         "citationSources": [
           {
             "startIndex": 548,
-            "endIndex": 690
+            "endIndex": 690,
+            "uri": "https://www.example.com/some-citation-1",
+            "license": "mit"
           },
           {
             "startIndex": 1240,
             "endIndex": 1407
+            "uri": "https://www.example.com/some-citation-1",
           },
           {
             "startIndex": 1942,
