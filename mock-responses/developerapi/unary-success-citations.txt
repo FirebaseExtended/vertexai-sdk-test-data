@@ -38,8 +38,8 @@
           },
           {
             "startIndex": 1240,
-            "endIndex": 1407
-            "uri": "https://www.example.com/some-citation-1",
+            "endIndex": 1407,
+            "uri": "https://www.example.com/some-citation-1"
           },
           {
             "startIndex": 1942,
