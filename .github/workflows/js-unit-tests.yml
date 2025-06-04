@@ -65,10 +65,10 @@ jobs:
         working-directory: firebase-js-sdk
       - name: Copy mock responses into SDK repo
         run: |
-          mkdir firebase-js-sdk/packages/vertexai/test-utils/vertexai-sdk-test-data &&
-          cp -r mock-responses firebase-js-sdk/packages/vertexai/test-utils/vertexai-sdk-test-data
+          mkdir firebase-js-sdk/packages/ai/test-utils/vertexai-sdk-test-data &&
+          cp -r mock-responses firebase-js-sdk/packages/ai/test-utils/vertexai-sdk-test-data
       - name: Run unit tests
         run: |
           yarn ts-node ./test-utils/convert-mocks.ts &&
           node ../../scripts/run_tests_in_ci.js -s test:skip-clone
-        working-directory: firebase-js-sdk/packages/vertexai
+        working-directory: firebase-js-sdk/packages/ai
