@@ -1,0 +1,34 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "**Thinking About Google's Headquarters**\n\nWell, this one's straightforward. The user wants to know the city where Google's headquarters is located.  Of course, that would be Mountain View. It's almost second nature at this point, especially given my background.  Simple question, simple answer.  Let's get that information to them quickly and move on.\n",
+            "thought": true
+          },
+          {
+            "text": "Mountain View"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 2,
+    "totalTokenCount": 40,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 14
+      }
+    ],
+    "thoughtsTokenCount": 24
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "2pmHaJqQEoqC-8YP6eStyAY"
+}
