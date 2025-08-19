@@ -34,7 +34,7 @@ jobs:
         target: [iOS, macOS, catalyst, tvOS, visionOS]
         include:
           - os: macos-15
-            xcode: Xcode_16
+            xcode: Xcode_16.4
     runs-on: ${{ matrix.os }}
     env:
       FIREBASECI_USE_LATEST_GOOGLEAPPMEASUREMENT: 1
