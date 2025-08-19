@@ -1,0 +1,24 @@
+{
+  "candidates": [],
+  "promptFeedback": {
+    "blockReasonMessage": "Message"
+  },
+  "usageMetadata": {
+    "promptTokenCount": 7,
+    "candidatesTokenCount": 22,
+    "totalTokenCount": 29,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 7
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 22
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.0-flash"
+}
