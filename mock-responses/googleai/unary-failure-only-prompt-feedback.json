@@ -1,0 +1,7 @@
+{
+  "candidates": [],
+  "promptFeedback": {
+    "blockReasonMessage": "Message"
+  },
+  "modelVersion": "gemini-2.0-flash"
+}
