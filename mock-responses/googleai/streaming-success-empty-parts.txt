@@ -1,0 +1,14 @@
+data: {"candidates": [{"content": {"parts": [{"text": "Here's a"}],"role": "model"}}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 4,"totalTokenCount": 20,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " cute cartoon kitten playing"}],"role": "model"}}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 8,"totalTokenCount": 24,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " with a ball of"}],"role": "model"}}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 12,"totalTokenCount": 28,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " yarn for"}],"role": "model"}}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 14,"totalTokenCount": 30,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " you! "}],"role": "model"}}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 17,"totalTokenCount": 33,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
+data: {"candidates": [{"content": {"role": "model"}}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 17,"totalTokenCount": 33,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
+data: {"candidates": [{"content": {"parts": [{"inlineData": {"mimeType": "image/png","data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQImWNwav0CAALIAbzDqqRyAAAAAElFTkSuQmCC"}}],"role": "model"},"finishReason": "STOP"}],"usageMetadata": {"promptTokenCount": 16,"candidatesTokenCount": 1307,"totalTokenCount": 1323,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 16}],"candidatesTokensDetails": [{"modality": "IMAGE","tokenCount": 1290}]},"modelVersion": "gemini-2.5-flash-image-preview","responseId": "kLewaKa5ONqI-8YP-c_NuAQ"}
+
