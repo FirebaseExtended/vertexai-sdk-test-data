@@ -1,0 +1,47 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "I can certainly help you with that! Here's your 3D rendered image of a pig with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery:\n\n"
+          },
+          {},
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQImWNwav0CAALIAbzDqqRyAAAAAElFTkSuQmCC"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 33,
+    "candidatesTokenCount": 299,
+    "totalTokenCount": 332,
+    "trafficType": "ON_DEMAND",
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 33
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 41
+      },
+      {
+        "modality": "IMAGE",
+        "tokenCount": 258
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.5-flash-image-preview",
+  "createTime": "2025-08-27T21:44:07.239896Z",
+  "responseId": "J3yvaJjSDpGgwu8PicCqmQs"
+}
