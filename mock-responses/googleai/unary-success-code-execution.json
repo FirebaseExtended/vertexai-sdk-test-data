@@ -1,0 +1,49 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "executableCode": {
+              "language": "PYTHON",
+              "code": "prime_numbers = [2, 3, 5, 7, 11]\nsum_of_primes = sum(prime_numbers)\nprint(f'{sum_of_primes=}')\n"
+            }
+          },
+          {
+            "codeExecutionResult": {
+              "outcome": "OUTCOME_OK",
+              "output": "sum_of_primes=28\n"
+            }
+          },
+          {
+            "text": "The first 5 prime numbers are 2, 3, 5, 7, and 11.\nThe sum of these numbers is:\n2 + 3 + 5 + 7 + 11 = 28"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 21,
+    "candidatesTokenCount": 96,
+    "totalTokenCount": 363,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 21
+      }
+    ],
+    "toolUsePromptTokenCount": 160,
+    "toolUsePromptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 160
+      }
+    ],
+    "thoughtsTokenCount": 86
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "2Uu4aK2pMeOR-8YP-7eXwAQ"
+}
