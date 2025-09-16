@@ -1,0 +1,98 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Berkshire Hathaway Inc.'s official website provides information including a message from Warren E. Buffett, annual and interim reports, and news releases. It also offers links to SEC filings, annual meeting details, and letters from Warren and Charlie. The site features investor presentations for Berkshire Hathaway Energy and links to various operating companies. Additionally, it includes information on common stock, corporate governance, and sustainability, along with a GEICO advertisement."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0,
+      "groundingMetadata": {
+        "groundingChunks": [
+          {
+            "web": {
+              "uri": "https://berkshirehathaway.com",
+              "title": "BERKSHIRE HATHAWAY INC."
+            }
+          }
+        ],
+        "groundingSupports": [
+          {
+            "segment": {
+              "startIndex": 100,
+              "endIndex": 155,
+              "text": "Buffett, annual and interim reports, and news releases."
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 156,
+              "endIndex": 253,
+              "text": "It also offers links to SEC filings, annual meeting details, and letters from Warren and Charlie."
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 254,
+              "endIndex": 366,
+              "text": "The site features investor presentations for Berkshire Hathaway Energy and links to various operating companies."
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 367,
+              "endIndex": 497,
+              "text": "Additionally, it includes information on common stock, corporate governance, and sustainability, along with a GEICO advertisement."
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          }
+        ]
+      },
+      "urlContextMetadata": {
+        "urlMetadata": [
+          {
+            "retrievedUrl": "https://berkshirehathaway.com",
+            "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+          }
+        ]
+      }
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 15,
+    "candidatesTokenCount": 102,
+    "totalTokenCount": 683,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 15
+      }
+    ],
+    "toolUsePromptTokenCount": 424,
+    "toolUsePromptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 424
+      }
+    ],
+    "thoughtsTokenCount": 142
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "PHLAaNz8O9il1MkP7Jf08Aw"
+}
+

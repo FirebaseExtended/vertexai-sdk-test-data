@@ -1,0 +1,95 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "\nThe valid page, https://ai.google.dev, successfully loaded and provided a comprehensive overview of Google AI for Developers, including information on models like Gemini, Imagen, and Veo, solutions for building with AI, and resources for code assistance. In contrast, the broken page, https://a-completely-non-existent-url-for-testing.org, could not be fetched and resulted in an error. The paywalled page, https://www.nytimes.com/2023/06/25/realestate/barbiecore-home-decor-interior-design.html?action=click&contentCollection=undefined&region=Footer&module=WhatsNext&version=WhatsNext&contentID=WhatsNext&moduleDetail=most-emailed-0&pgtype=undefinedl, was inaccessible due to what appears to be a paywall, login requirement, or other restriction, preventing the content from being retrieved."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0,
+      "groundingMetadata": {
+        "groundingChunks": [
+          {
+            "web": {
+              "uri": "https://ai.google.dev",
+              "title": "Gemini Developer API | Gemma open models | Google AI for ..."
+            }
+          }
+        ],
+        "groundingSupports": [
+          {
+            "segment": {
+              "startIndex": 1,
+              "endIndex": 254,
+              "text": "The valid page, https://ai.google.dev, successfully loaded and provided a comprehensive overview of Google AI for Developers, including information on models like Gemini, Imagen, and Veo, solutions for building with AI, and resources for code assistance"
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 256,
+              "endIndex": 386,
+              "text": "In contrast, the broken page, https://a-completely-non-existent-url-for-testing.org, could not be fetched and resulted in an error"
+            },
+            "groundingChunkIndices": [
+              1
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 388,
+              "endIndex": 792,
+              "text": "The paywalled page, https://www.nytimes.com/2023/06/25/realestate/barbiecore-home-decor-interior-design.html?action=click&contentCollection=undefined&region=Footer&module=WhatsNext&version=WhatsNext&contentID=WhatsNext&moduleDetail=most-emailed-0&pgtype=undefinedl, was inaccessible due to what appears to be a paywall, login requirement, or other restriction, preventing the content from being retrieved"
+            },
+            "groundingChunkIndices": [
+              2
+            ]
+          }
+        ]
+      },
+      "urlContextMetadata": {
+        "urlMetadata": [
+          {
+            "retrievedUrl": "https://a-completely-non-existent-url-for-testing.org",
+            "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_ERROR"
+          },
+          {
+            "retrievedUrl": "https://ai.google.dev",
+            "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+          },
+          {
+            "retrievedUrl": "https://www.nytimes.com/2023/06/25/realestate/barbiecore-home-decor-interior-design.html?action=click&contentCollection=undefined&region=Footer&module=WhatsNext&version=WhatsNext&contentID=WhatsNext&moduleDetail=most-emailed-0&pgtype=undefinedl",
+            "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_ERROR"
+          }
+        ]
+      }
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 118,
+    "candidatesTokenCount": 312,
+    "totalTokenCount": 2437,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 118
+      }
+    ],
+    "toolUsePromptTokenCount": 1961,
+    "toolUsePromptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 1961
+      }
+    ],
+    "thoughtsTokenCount": 46
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "A3LAaKOxC7TG-8YPo_G4QA"
+}
