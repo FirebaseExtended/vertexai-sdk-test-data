@@ -1,0 +1,82 @@
+{
+  "type": "OBJECT",
+  "description": "A test kdoc",
+  "properties": {
+    "integerTest": {
+      "type": "INTEGER",
+      "format": "int32",
+      "nullable": true,
+      "title": "integerTest"
+    },
+    "longTest": {
+      "type": "INTEGER",
+      "description": "a test long",
+      "title": "longTest",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "floatTest": {
+      "type": "NUMBER",
+      "format": "float",
+      "title": "floatTest"
+    },
+    "doubleTest": {
+      "type": "NUMBER",
+      "nullable": true,
+      "title": "doubleTest"
+    },
+    "listTest": {
+      "type": "ARRAY",
+      "items": {
+        "type": "INTEGER",
+        "format": "int32"
+      },
+      "title": "listTest",
+      "minItems": 0,
+      "maxItems": 5
+    },
+    "booleanTest": {
+      "type": "BOOLEAN",
+      "title": "booleanTest"
+    },
+    "stringTest": {
+      "type": "STRING",
+      "format": "email",
+      "title": "stringTest"
+    },
+    "objTest": {
+      "type": "OBJECT",
+      "description": "class kdoc should be used if property kdocs aren't present",
+      "properties": {
+        "testInt": {
+          "type": "INTEGER",
+          "format": "int32",
+          "title": "testInt"
+        }
+      },
+      "required": [
+        "testInt"
+      ],
+      "title": "objTest"
+    },
+    "enumTest": {
+      "type": "STRING",
+      "format": "enum",
+      "enum": [
+        "val1",
+        "val2",
+        "val3"
+      ]
+    }
+  },
+  "required": [
+    "integerTest",
+    "longTest",
+    "floatTest",
+    "doubleTest",
+    "listTest",
+    "stringTest",
+    "objTest",
+    "enumTest"
+  ]
+}
