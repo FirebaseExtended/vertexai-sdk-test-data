@@ -32,7 +32,7 @@
     "listTest": {
       "type": "array",
       "items": {
-        "type": "number",
+        "type": "integer",
         "minimum": -2147483648,
         "maximum": 2147483647
       },
@@ -54,7 +54,7 @@
       "description": "class kdoc should be used if property kdocs aren't present",
       "properties": {
         "testInt": {
-          "type": "number",
+          "type": "integer",
           "title": "testInt",
           "minimum": -2147483648,
           "maximum": 2147483647
