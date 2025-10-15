@@ -13,7 +13,7 @@
     },
     "longTest": {
       "type": "integer",
-      "description": "longTest a test long",
+      "description": "a test long",
       "title": "longTest",
       "minimum": 0,
       "maximum": 5
