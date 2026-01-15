@@ -1,0 +1,36 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Red Riding Hood is looking for **directions** in the forest."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 12013,
+    "candidatesTokenCount": 15,
+    "totalTokenCount": 12101,
+    "cachedContentTokenCount": 11243,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 12013
+      }
+    ],
+    "cacheTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 11243
+      }
+    ],
+    "thoughtsTokenCount": 73
+  },
+  "modelVersion": "gemini-2.5-flash",
+}
