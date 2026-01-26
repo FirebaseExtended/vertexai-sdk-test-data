@@ -1,0 +1,39 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "name": "fetchWeather",
+              "args": {
+                "param": {
+                  "state": "MA",
+                  "city": "Boston",
+                  "date": "2024-10-17"
+                }
+              }
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0,
+      "finishMessage": "Model generated function call(s)."
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 212,
+    "candidatesTokenCount": 39,
+    "totalTokenCount": 390,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 212
+      }
+    ],
+    "thoughtsTokenCount": 139
+  },
+  "modelVersion": "gemini-2.5-flash"
+}
