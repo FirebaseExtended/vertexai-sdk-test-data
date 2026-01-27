@@ -1,0 +1,226 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Here are a few pizza places near you:\n\n*   **Joe’s Pizza** is a highly-rated option (4.5 stars) and is an inexpensive, counter-service pizzeria serving classic pies and slices. They offer takeout, delivery, and dine-in, and are open until 3:00 AM on weekdays.\n*   **Stage Door Pizzeria** also has a 4.5-star rating and is an inexpensive spot offering \"upside down slices,\" calzones, and cheesecake in a casual setting. They offer takeout, delivery, and dine-in.\n*   **Little Italy Pizza - Park Place** is rated 4.2 stars and offers pizza by the slice, full pies, and calzones for takeout and delivery. It's an inexpensive option and has Wi-Fi.\n*   **Famous Calabria Pizza** is rated 4.5 stars and is a moderately priced, funky, counter-service cafe offering slices, salads, Italian entrees, and house-bottled lemonade. They offer takeout, delivery, and dine-in, and have outdoor seating.\n*   **Traditas Pizza** has an excellent rating of 4.8 stars and is a moderately priced option for familiar slices and pies with a variety of toppings, plus pasta. They offer takeout, delivery, and dine-in."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0,
+      "groundingMetadata": {
+        "groundingChunks": [
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=10332424901773702701",
+              "title": "Joe’s Pizza",
+              "placeId": "places/ChIJqdNaaBVbwokRLTafYrQlZI8"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=4220952323027039852",
+              "title": "Little Italy Pizza",
+              "placeId": "places/ChIJuXASOB9awokRbPbiM8bVkzo"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=17898085436872455458",
+              "title": "Little Italy Pizzeria and Deli",
+              "placeId": "places/ChIJozrpOT1awokRIvVfcODFYvg"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=4421433968052157188",
+              "title": "Famous Calabria Pizza",
+              "placeId": "places/ChIJH83KFSRawokRBDuYp8QWXD0"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=2701502875049963870",
+              "title": "Stage Door Pizzeria",
+              "placeId": "places/ChIJV4zXcCVbwokRXrEMO42qfSU"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=3171214220453940517",
+              "title": "Little Italy Pizza - Park Place",
+              "placeId": "places/ChIJDYX_wRhawokRJQ3THIhqAiw"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=13252479367159462576",
+              "title": "Traditas Pizza",
+              "placeId": "places/ChIJR2acUDRbwokRsLq7EMVD6rc"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=11737504804342449142",
+              "title": "Rosella's Pizzeria",
+              "placeId": "places/ChIJJ7FgvSJawokR9sNFfG7-46I"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=5509424183060619077",
+              "title": "Luna Pizza",
+              "placeId": "places/ChIJJXgZmSZawokRRV9GtBpodUw"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=2425724581361028425",
+              "title": "Hank's Pizza",
+              "placeId": "places/ChIJU3wsQvRbwokRSQ31mqfnqSE"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=11167941577254722832",
+              "title": "Abitino’s Pizza Financial District",
+              "placeId": "places/ChIJW-se-fFbwokREF2VuLF__Jo"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=1263887110027579112",
+              "title": "The Pie Guy Pizza",
+              "placeId": "places/ChIJtTEDk_lbwokR6I5jVaE6ihE"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=16877262240194468165",
+              "title": "Norm’s Pizza",
+              "placeId": "places/ChIJPxQQB1hbwokRRZnnf5YUOOo"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=5022977731717236697",
+              "title": "Underground Pizza",
+              "placeId": "places/ChIJqW49gRZawokR2Qe0VaIztUU"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=5414554482879335182",
+              "title": "PIZZA ETALIA",
+              "placeId": "places/ChIJfVxAABRawokRDosFWZ1cJEs"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=16925549909071863193",
+              "title": "Justino's pizza",
+              "placeId": "places/ChIJuyfMsrxbwokRmZ1fhveh4-o"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=11296178631348873392",
+              "title": "Friendly Gourmet Pizza",
+              "placeId": "places/ChIJuyPWvMJbwokRsGjokJ0WxJw"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=17300181682144955256",
+              "title": "Pronto Pizza",
+              "placeId": "places/ChIJZVXM_xlawokReEv4YZSXFvA"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=15033756672072349416",
+              "title": "$1.50 Fresh Pizza",
+              "placeId": "places/ChIJwQBu7fNZwokR6PaHfgqiotA"
+            }
+          },
+          {
+            "maps": {
+              "uri": "https://maps.google.com/?cid=3798394177457033436",
+              "title": "The Grotto Pizzeria",
+              "placeId": "places/ChIJHQm1tBZawokR3BA9MGGbtjQ"
+            }
+          }
+        ],
+        "groundingSupports": [
+          {
+            "segment": {
+              "startIndex": 421,
+              "endIndex": 463,
+              "text": "They offer takeout, delivery, and dine-in."
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 604,
+              "endIndex": 645,
+              "text": "It's an inexpensive option and has Wi-Fi."
+            },
+            "groundingChunkIndices": [
+              1
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 821,
+              "endIndex": 889,
+              "text": "They offer takeout, delivery, and dine-in, and have outdoor seating."
+            },
+            "groundingChunkIndices": [
+              2
+            ]
+          },
+          {
+            "segment": {
+              "startIndex": 1053,
+              "endIndex": 1095,
+              "text": "They offer takeout, delivery, and dine-in."
+            },
+            "groundingChunkIndices": [
+              3
+            ]
+          }
+        ],
+        "webSearchQueries": [
+          "pizza near me"
+        ]
+      }
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "candidatesTokenCount": 288,
+    "totalTokenCount": 443,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 9
+      }
+    ],
+    "toolUsePromptTokenCount": 59,
+    "toolUsePromptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 59
+      }
+    ],
+    "thoughtsTokenCount": 87
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "oNt4adaNNIrQjMcPqMfQ0A8"
+}
