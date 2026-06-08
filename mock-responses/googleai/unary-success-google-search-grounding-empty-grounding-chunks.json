@@ -57,6 +57,6 @@
       }
     ]
   },
-  "modelVersion": "gemini-2.0-flash",
+  "modelVersion": "gemini-3.1-flash-lite",
   "responseId": "4w1DaLPiNOCKqsMPrNTTyAQ"
 }

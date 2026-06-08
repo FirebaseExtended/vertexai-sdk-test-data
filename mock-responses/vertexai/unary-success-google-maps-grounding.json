@@ -716,7 +716,7 @@
       }
     ]
   },
-  "modelVersion": "gemini-2.0-flash",
+  "modelVersion": "gemini-3.1-flash-lite",
   "createTime": "2026-01-27T16:21:55.245730Z",
   "responseId": "I-Z4aeL_DuGmlu8P9Krl-QU"
 }
